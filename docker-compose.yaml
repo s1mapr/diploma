@@ -1,0 +1,124 @@
+version: '3'
+
+services:
+  nginx:
+    image: 'nginx:alpine'
+    networks:
+      - diploma-api
+    ports:
+      - '${APP_PORT:-80}:80'
+    volumes:
+      - '.:/var/www/html'
+      - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf'
+      - './docker/nginx/conf.d:/etc/nginx/conf.d'
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+      target: 'local'
+    image: "diploma-api:latest"
+    networks:
+      - diploma-api
+    volumes:
+      - '.:/var/www/html'
+      - './docker/api/.bashrc:/home/www/.bashrc'
+    depends_on:
+      - mysql
+      - redis
+
+
+  reverb:
+    image: "diploma-api:latest"
+    ports:
+      - "8080:8080"
+    networks:
+      - diploma-api
+    volumes:
+      - '.:/var/www/html'
+    command: "php artisan reverb:start --debug"
+    depends_on:
+      - api
+
+  horizon:
+    image: "diploma-api:latest"
+    command: 'php artisan horizon'
+    networks:
+      - diploma-api
+    volumes:
+      - '.:/var/www/html'
+      - './docker/api/.bashrc:/home/www/.bashrc'
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: 'mysql:8.0'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    command: --innodb-use-native-aio=0
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'mysql:/var/lib/mysql'
+      - '.:/var/www/html'
+    networks:
+      - diploma-api
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+      retries: 3
+      timeout: 5s
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'redis:/data'
+    networks:
+      - diploma-api
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      retries: 3
+      timeout: 5s
+
+  meilisearch:
+    image: 'getmeili/meilisearch:latest'
+    ports:
+      - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+    volumes:
+      - 'meilisearch:/data.ms'
+    environment:
+      - MEILI_MASTER_KEY=gp9yLKvVZH6yll88Gs_ld1F2DCeB05S-HC8f8tWislQ
+    networks:
+      - diploma-api
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--spider", "http://localhost:7700/health" ]
+      retries: 3
+      timeout: 5s
+
+  mailpit:
+    image: 'axllent/mailpit:latest'
+    ports:
+      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - diploma-api
+
+volumes:
+  mysql:
+    driver: local
+  redis:
+    driver: local
+  meilisearch:
+    driver: local
+
+networks:
+  diploma-api:
+    driver: bridge
