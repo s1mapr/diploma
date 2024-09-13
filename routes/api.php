@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\LessonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -10,7 +12,16 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login');
+    Route::post('/user-login', 'userLogin');
+    Route::post('/teacher-login', 'teacherLogin');
     Route::post('/register', 'register');
-    Route::post('/logout', 'logout')->middleware('auth:api');
+    Route::post('/logout', 'logout')->middleware('auth:api_user');
+});
+
+Route::prefix('courses')->controller(CourseController::class)->group(function () {
+    Route::post('/', 'createCourse')->middleware('auth:api_teacher');
+});
+
+Route::prefix('lessons')->controller(LessonController::class)->group(function () {
+    Route::post('/', 'createLesson')->middleware('auth:api_teacher');
 });
