@@ -10,4 +10,9 @@ class LessonRepository
     {
         return Lesson::create($data);
     }
+
+    public function findAllLessonsOfCourse(int $id)
+    {
+        return Lesson::where('course_id', $id)->get();
+    }
 }

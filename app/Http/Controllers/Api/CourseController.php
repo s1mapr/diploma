@@ -40,4 +40,14 @@ class CourseController extends Controller
             'lesson' => LessonResource::make($lesson)
         ]);
     }
+
+    public function getCourseData(Course $course)
+    {
+        $lessons = $this->lessonService->findAllLessonsOfCourse($course);
+
+        return $this->success([
+            'course' => CourseResource::make($course),
+            'lessons' => LessonResource::collection($lessons)
+        ]);
+    }
 }
