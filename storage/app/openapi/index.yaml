@@ -8,6 +8,7 @@ servers:
     description: Local server
 tags:
   - name: 1. User authentication
+  - name: 2. Courses
 paths:
   /api/auth/user-login:
     post:
@@ -244,7 +245,105 @@ paths:
                         items:
                           type: string
                           example: "The password must be at least 8 characters."
-
+  /api/courses:
+    post:
+      summary: Create a new course
+      description: Creates a new course for the authenticated teacher.
+      tags:
+        - 2. Courses
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: integer
+                  example: 1
+                title:
+                  type: string
+                  example: "Introduction to Programming"
+                description:
+                  type: string
+                  example: "This course covers the basics of programming."
+                image:
+                  type: string
+                  format: binary
+                video_url:
+                  type: string
+                  example: "https://example.com/video.mp4"
+                status:
+                  type: integer
+                  enum: [ 1, 2, 3]
+                  example: 1
+                type:
+                  type: integer
+                  enum: [ 1, 2 ]
+                  example: 2
+      responses:
+        '200':
+          description: Course created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      course:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          teacher_id:
+                            type: integer
+                            example: 2
+                          category_id:
+                            type: integer
+                            example: 1
+                          title:
+                            type: string
+                            example: "Introduction to Programming"
+                          description:
+                            type: string
+                            example: "This course covers the basics of programming."
+                          image_url:
+                            type: string
+                            example: "https://example.com/image.jpg"
+                          video_url:
+                            type: string
+                            example: "https://example.com/video.mp4"
+                          status:
+                            type: integer
+                            example: 1
+                          type:
+                            type: integer
+                            example: 2
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Unauthenticated."
+      security:
+        - bearerAuth: [ ]
 components:
   securitySchemes:
     bearerAuth:
