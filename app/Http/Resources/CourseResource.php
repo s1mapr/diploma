@@ -15,10 +15,15 @@ class CourseResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'teacher_id' => $this->teacher_id,
+            'category_id' => $this->category_id,
             'title' => $this->title,
             'description' => $this->description,
-            'slug' => $this->slug,
-            'status' => $this->status
+            'image_url' => $this->image_url,
+            'video_url' => $this->video_url,
+            'status' => $this->status,
+            'type' => $this->type,
+            'connection_code' => $this->connection_code,
         ];
     }
 }

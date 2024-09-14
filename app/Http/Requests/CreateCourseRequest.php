@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\CourseStatuses;
+use App\Enums\CourseTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -16,10 +17,13 @@ class CreateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category_id' => ['required', 'integer', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:1000'],
-            'slug' => ['required', 'string', 'max:50'],
+            'image' => ['required', 'image', 'max:2048', 'mimes:jpeg,png,jpg'],
+            'video_url' => ['required', 'string', 'max:255'],
             'status' => ['integer', 'required', 'in:' . implode(',', CourseStatuses::toValuesArray())],
+            'type' => ['integer', 'required', 'in:' . implode(',', CourseTypes::toValuesArray())],
         ];
     }
 }
