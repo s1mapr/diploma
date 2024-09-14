@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\ContentTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property $id
  * @property $content
- * @property $image_url
- * @property $video_url
+ * @property $type
 */
 class ContentBlock extends Model
 {
@@ -17,7 +17,10 @@ class ContentBlock extends Model
 
     protected $fillable = [
         'content',
-        'image_url',
-        'video_url'
+        'type'
+    ];
+
+    protected $casts = [
+        'type' => ContentTypes::class,
     ];
 }

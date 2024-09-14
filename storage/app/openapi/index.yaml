@@ -1,0 +1,252 @@
+openapi: 3.0.0
+info:
+  title: Memochat API
+  description: An API for messenger app
+  version: 0.0.1
+servers:
+  - url: http://localhost
+    description: Local server
+tags:
+  - name: 1. User authentication
+paths:
+  /api/auth/user-login:
+    post:
+      summary: User Login
+      description: Authenticates a user with their email and password.
+      tags:
+        - 1. User authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          first_name:
+                            type: string
+                            example: "John"
+                          last_name:
+                            type: string
+                            example: "Doe"
+                          email:
+                            type: string
+                            example: "john.doe@example.com"
+                          avatar_url:
+                            type: string
+                            example: "https://example.com/avatar.jpg"
+                      token:
+                        type: string
+                        example: "3mPzOaKx93JXBG8hg6P8"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "User not found"
+  /api/auth/teacher-login:
+    post:
+      summary: User Login
+      description: Authenticates a teacher with their email and password.
+      tags:
+        - 1. User authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "teacher@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          first_name:
+                            type: string
+                            example: "John"
+                          last_name:
+                            type: string
+                            example: "Doe"
+                          email:
+                            type: string
+                            example: "john.doe@example.com"
+                          avatar_url:
+                            type: string
+                            example: "https://example.com/avatar.jpg"
+                      token:
+                        type: string
+                        example: "3mPzOaKx93JXBG8hg6P8"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Teacher not found"
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      description: Registers a new user and returns an authentication token.
+      tags:
+        - 1. User authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: "John"
+                last_name:
+                  type: string
+                  example: "Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+                avatar_url:
+                  type: string
+                  format: url
+                  nullable: true
+                  example: "https://example.com/avatar.jpg"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          first_name:
+                            type: string
+                            example: "John"
+                          last_name:
+                            type: string
+                            example: "Doe"
+                          email:
+                            type: string
+                            example: "john.doe@example.com"
+                          avatar_url:
+                            type: string
+                            example: "https://example.com/avatar.jpg"
+                      token:
+                        type: string
+                        example: "3mPzOaKx93JXBG8hg6P8"
+        '422':
+          description: Bad Request - validation errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Validation errors"
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        items:
+                          type: string
+                          example: "The email has already been taken."
+                      password:
+                        type: array
+                        items:
+                          type: string
+                          example: "The password must be at least 8 characters."
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

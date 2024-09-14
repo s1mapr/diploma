@@ -56,6 +56,13 @@ return [
             'throw' => false,
         ],
 
+        'openapi' => [
+            'driver' => 'local',
+            'root' => storage_path('app/openapi'),
+            'url' => '/openapi',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
     ],
 
     /*
@@ -71,6 +78,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('openapi') => storage_path('app/openapi'),
     ],
 
 ];
