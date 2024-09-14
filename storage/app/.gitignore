@@ -1,3 +1,5 @@
 *
 !public/
+!openapi/
+!openapi/**/*
 !.gitignore

@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('content_blocks', function (Blueprint $table) {
             $table->id();
-            $table->text('content')->nullable();
-            $table->string('image_url')->nullable();
-            $table->string('video_url')->nullable();
+            $table->text('content');
+            $table->unsignedTinyInteger('type');
             $table->timestamps();
         });
     }

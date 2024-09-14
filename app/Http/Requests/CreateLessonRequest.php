@@ -15,7 +15,6 @@ class CreateLessonRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:100'],
             'estimation' => ['required', 'int', 'min:1'],
-            'course_id' => ['required', 'int', 'exists:courses,id']
         ];
     }
 }

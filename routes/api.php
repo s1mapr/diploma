@@ -20,8 +20,9 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
 
 Route::prefix('courses')->controller(CourseController::class)->group(function () {
     Route::post('/', 'createCourse')->middleware('auth:api_teacher');
+    Route::post('/{course}/lesson', 'createLesson')->middleware('auth:api_teacher');
 });
 
 Route::prefix('lessons')->controller(LessonController::class)->group(function () {
-    Route::post('/', 'createLesson')->middleware('auth:api_teacher');
+    Route::post('/{lesson}/content-block', 'createContentBlock')->middleware('auth:api_teacher');
 });
