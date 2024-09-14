@@ -19,4 +19,9 @@ class LessonService
         $data['course_id'] = $course->id;
         return $this->lessonRepository->createLesson($data);
     }
+
+    public function findAllLessonsOfCourse(Course $course)
+    {
+        return $this->lessonRepository->findAllLessonsOfCourse($course->id);
+    }
 }

@@ -19,4 +19,9 @@ class ContentBlockService
         $data['lesson_id'] = $lesson->id;
         return $this->contentBlockRepository->createContentBlock($data);
     }
+
+    public function findAllContentBlocksOfLesson(Lesson $lesson)
+    {
+        return $this->contentBlockRepository->findAllContentBlocksOfLesson($lesson->id);
+    }
 }

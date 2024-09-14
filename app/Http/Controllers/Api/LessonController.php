@@ -31,4 +31,14 @@ class LessonController extends Controller
             'contentBlock' => LessonResource::make($contentBlock)
         ]);
     }
+
+    public function getLessonData(Lesson $lesson)
+    {
+        $contentBlocks = $this->contentBlockService->findAllContentBlocksOfLesson($lesson);
+
+        return $this->success([
+            'lesson' => LessonResource::make($lesson),
+            'contentBlocks' => LessonResource::collection($contentBlocks)
+        ]);
+    }
 }
