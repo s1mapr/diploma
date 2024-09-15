@@ -21,6 +21,10 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
 Route::prefix('courses')->controller(CourseController::class)->group(function () {
     Route::post('/', 'createCourse')->middleware('auth:api_teacher');
     Route::post('/{course}/lesson', 'createLesson')->middleware('auth:api_teacher');
+    Route::post('/{course}/update', 'updateCourse')->middleware('auth:api_teacher');
+    Route::get('/', 'getAllTeacherCourses')->middleware('auth:api_teacher');
+    Route::get('/{course}', 'getCourseData')->middleware('auth:api_teacher');
+    Route::delete('/{course}', 'deleteCourse')->middleware('auth:api_teacher');
 });
 
 Route::prefix('lessons')->controller(LessonController::class)->group(function () {

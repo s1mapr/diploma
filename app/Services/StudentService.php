@@ -34,7 +34,6 @@ class StudentService
                     $data['image'],
                     uniqid('avatar_', true)
                 );
-                dump($data['avatar_url']);
             }
 
             $user->update($data);

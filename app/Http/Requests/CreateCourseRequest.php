@@ -7,10 +7,13 @@ use App\Enums\CourseTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
+ * @property $category_id
  * @property $title
  * @property $description
- * @property $slug
+ * @property $image
+ * @property $video_url
  * @property $status
+ * @property $type
 */
 class CreateCourseRequest extends FormRequest
 {

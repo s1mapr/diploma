@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\CreateLessonRequest;
+use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\LessonResource;
 use App\Models\Course;
@@ -62,6 +63,24 @@ class CourseController extends Controller
             'last_page'=> $courses->lastPage(),
             'total'=> $courses->total(),
             'courses' => CourseResource::collection($courses)
+        ]);
+    }
+
+    public function updateCourse(UpdateCourseRequest $request, Course $course)
+    {
+        $course = $this->courseService->updateCourse($course, $request->validated());
+
+        return $this->success([
+            'course' => CourseResource::make($course)
+        ]);
+    }
+
+    public function deleteCourse(Course $course)
+    {
+        $this->courseService->deleteCourse($course);
+
+        return $this->successWithoutData([
+            'message' => 'Course deleted successfully'
         ]);
     }
 }
