@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
-    Route::post('/user-login', 'userLogin');
+    Route::post('/student-login', 'studentLogin');
     Route::post('/teacher-login', 'teacherLogin');
     Route::post('/register', 'register');
     Route::post('/logout', 'logout')->middleware('auth:api_user');
