@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('estimation');
+            $table->integer('status');
             $table->unsignedBigInteger('course_id');
             $table->timestamps();
 

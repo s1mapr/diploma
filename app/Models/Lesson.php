@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LessonStatuses;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $id
  * @property $title
  * @property $estimation
+ * @property $status
 */
 class Lesson extends Model
 {
@@ -17,6 +19,11 @@ class Lesson extends Model
     protected $fillable =[
         'title',
         'estimation',
-        'course_id'
+        'course_id',
+        'status'
+    ];
+
+    protected $casts = [
+        'status' => LessonStatuses::class,
     ];
 }

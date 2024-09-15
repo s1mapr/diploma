@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Course;
+use App\Models\Lesson;
 use App\Repositories\LessonRepository;
 
 class LessonService
@@ -23,5 +24,16 @@ class LessonService
     public function findAllLessonsOfCourse(Course $course)
     {
         return $this->lessonRepository->findAllLessonsOfCourse($course->id);
+    }
+
+    public function updateLesson(Lesson $lesson, array $data)
+    {
+        $lesson->update($data);
+        return $lesson;
+    }
+
+    public function deleteLesson(Lesson $lesson)
+    {
+        $lesson->delete();
     }
 }

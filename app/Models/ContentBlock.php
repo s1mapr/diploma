@@ -17,7 +17,8 @@ class ContentBlock extends Model
 
     protected $fillable = [
         'content',
-        'type'
+        'type',
+        'lesson_id'
     ];
 
     protected $casts = [

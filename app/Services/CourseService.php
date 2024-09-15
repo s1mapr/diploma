@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\CourseStatuses;
+use App\Models\Course;
 use App\Models\Teacher;
 use App\Repositories\CourseRepository;
 use Illuminate\Support\Facades\DB;
@@ -62,5 +64,24 @@ class CourseService
     public function getAllTeacherCourses(Teacher $teacher)
     {
         return $this->courseRepository->getAllTeacherCourses($teacher->id);
+    }
+
+    public function updateCourse(Course $course, array $data)
+    {
+        if(isset($data['image'])) {
+            $data['image_url'] = $this->s3Service->uploadFile(
+                'courses/' . $course->id,
+                $data['image'],
+                uniqid('course_pic_', true)
+            );
+        }
+
+        $course->update($data);
+        return $course;
+    }
+
+    public function deleteCourse(Course $course)
+    {
+        $course->delete();
     }
 }
