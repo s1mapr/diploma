@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string password
  * @property string avatar_url
 */
-class User extends Authenticatable
+class Student extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -33,5 +34,13 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn(?string $value) => $value !== null ?
+                config('services.storage_base_url') . $value : null
+        );
     }
 }

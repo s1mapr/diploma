@@ -7,15 +7,15 @@ servers:
   - url: http://localhost
     description: Local server
 tags:
-  - name: 1. User authentication
+  - name: 1. Authentication
   - name: 2. Courses
 paths:
-  /api/auth/user-login:
+  /api/auth/student-login:
     post:
-      summary: User Login
+      summary: Student Login
       description: Authenticates a user with their email and password.
       tags:
-        - 1. User authentication
+        - 1. Authentication
       requestBody:
         required: true
         content:
@@ -78,13 +78,13 @@ paths:
                     example: "error"
                   message:
                     type: string
-                    example: "User not found"
+                    example: "Student not found"
   /api/auth/teacher-login:
     post:
-      summary: User Login
+      summary: Teacher Login
       description: Authenticates a teacher with their email and password.
       tags:
-        - 1. User authentication
+        - 1. Authentication
       requestBody:
         required: true
         content:
@@ -153,7 +153,7 @@ paths:
       summary: Register a new user
       description: Registers a new user and returns an authentication token.
       tags:
-        - 1. User authentication
+        - 1. Authentication
       requestBody:
         required: true
         content:

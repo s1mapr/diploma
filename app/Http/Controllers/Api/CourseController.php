@@ -10,6 +10,7 @@ use App\Http\Resources\LessonResource;
 use App\Models\Course;
 use App\Services\CourseService;
 use App\Services\LessonService;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -48,6 +49,19 @@ class CourseController extends Controller
         return $this->success([
             'course' => CourseResource::make($course),
             'lessons' => LessonResource::collection($lessons)
+        ]);
+    }
+
+    public function getAllTeacherCourses(Request $request)
+    {
+        $user = $request->user();
+        $courses = $this->courseService->getAllTeacherCourses($user);
+
+        return $this->success([
+            'current_page'=> $courses->currentPage(),
+            'last_page'=> $courses->lastPage(),
+            'total'=> $courses->total(),
+            'courses' => CourseResource::collection($courses)
         ]);
     }
 }

@@ -46,7 +46,7 @@ class CourseService
                 ->setMaxPrime(self::MAX_PRIME)
                 ->setCharacters(self::CHARACTERS_FOR_GENERATION)
                 ->setLength(self::CODE_LENGTH)
-                ->generate($user->id);
+                ->generate($course->id);
             $data['connection_code'] = $code;
 
             $course->update($data);
@@ -57,5 +57,10 @@ class CourseService
         }
 
         return $course;
+    }
+
+    public function getAllTeacherCourses(Teacher $teacher)
+    {
+        return $this->courseRepository->getAllTeacherCourses($teacher->id);
     }
 }
