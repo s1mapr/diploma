@@ -29,4 +29,7 @@ Route::prefix('courses')->controller(CourseController::class)->group(function ()
 
 Route::prefix('lessons')->controller(LessonController::class)->group(function () {
     Route::post('/{lesson}/content-block', 'createContentBlock')->middleware('auth:api_teacher');
+    Route::get('/{lesson}', 'getLessonData')->middleware('auth:api_teacher');
+    Route::patch('/{lesson}', 'updateLesson')->middleware('auth:api_teacher');
+    Route::delete('/{lesson}', 'deleteLesson')->middleware('auth:api_teacher');
 });

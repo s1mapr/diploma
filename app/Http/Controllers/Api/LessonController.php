@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateContentBlockRequest;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\CreateLessonRequest;
+use App\Http\Requests\UpdateLessonRequest;
+use App\Http\Resources\ContentBlockResource;
 use App\Http\Resources\LessonResource;
 use App\Models\Lesson;
 use App\Repositories\ContentBlockRepository;
@@ -28,7 +30,7 @@ class LessonController extends Controller
         $contentBlock = $this->contentBlockService->createContentBlock($lesson, $request->validated());
 
         return $this->success([
-            'contentBlock' => LessonResource::make($contentBlock)
+            'contentBlock' => ContentBlockResource::make($contentBlock)
         ]);
     }
 
@@ -38,7 +40,23 @@ class LessonController extends Controller
 
         return $this->success([
             'lesson' => LessonResource::make($lesson),
-            'contentBlocks' => LessonResource::collection($contentBlocks)
+            'contentBlocks' => ContentBlockResource::collection($contentBlocks)
         ]);
+    }
+
+    public function updateLesson(UpdateLessonRequest $request, Lesson $lesson)
+    {
+        $lesson = $this->lessonService->updateLesson($lesson, $request->validated());
+
+        return $this->success([
+            'lesson' => LessonResource::make($lesson)
+        ]);
+    }
+
+    public function deleteLesson(Lesson $lesson)
+    {
+        $this->lessonService->deleteLesson($lesson);
+
+        return $this->successWithoutData("Lesson deleted successfully");
     }
 }

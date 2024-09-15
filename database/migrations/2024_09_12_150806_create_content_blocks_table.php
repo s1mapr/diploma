@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('content_blocks', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('lesson_id');
             $table->text('content');
             $table->unsignedTinyInteger('type');
             $table->timestamps();
+
+            $table->foreign('lesson_id')->references('id')->on('lessons');
         });
     }
 
