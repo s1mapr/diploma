@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property string last_name
  * @property string email
  * @property string password
- * @property string avatar_url
+ * @property string image
 */
 class RegisterRequest extends FormRequest
 {
@@ -23,9 +23,9 @@ class RegisterRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255', 'unique:students,email'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
-            'avatar_url' => ['nullable', 'url', 'max:255'],
+            'image' => ['required', 'image', 'max:2048', 'mimes:jpeg,png,jpg'],
         ];
     }
 }

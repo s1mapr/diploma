@@ -5,29 +5,29 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\StudentResource;
 use App\Services\TeacherService;
-use App\Services\UserService;
+use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    private UserService $userService;
+    private StudentService $userService;
     private TeacherService $teacherService;
 
-    public function __construct(UserService $userService, TeacherService $teacherService)
+    public function __construct(StudentService $userService, TeacherService $teacherService)
     {
         $this->userService = $userService;
         $this->teacherService = $teacherService;
     }
 
-    public function userLogin(LoginRequest $request)
+    public function studentLogin(LoginRequest $request)
     {
         $user = $this->userService->getUserByEmail($request->email);
 
         if (!$user) {
-            return $this->error('User not found', 401);
+            return $this->error('Student not found', 401);
         }
         if (!Hash::check($request['password'], $user->password)) {
             return $this->error('Credentials not match', 401);
@@ -36,7 +36,7 @@ class AuthController extends Controller
         $token = $user->createToken('default')->plainTextToken;
 
         return $this->success([
-            'user' => UserResource::make($user),
+            'user' => StudentResource::make($user),
             'token' => $token
         ]);
     }
@@ -55,7 +55,7 @@ class AuthController extends Controller
         $token = $user->createToken('default')->plainTextToken;
 
         return $this->success([
-            'user' => UserResource::make($user),
+            'user' => StudentResource::make($user),
             'token' => $token
         ]);
     }
@@ -63,12 +63,12 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
-        $user = $this->userService->createUser($data);
+        $user = $this->userService->createStudent($data);
 
         $token = $user->createToken('default')->plainTextToken;
 
         return $this->success([
-            'user' => UserResource::make($user),
+            'user' => StudentResource::make($user),
             'token' => $token
         ]);
     }
@@ -78,6 +78,6 @@ class AuthController extends Controller
         $user = $request->user();
         $this->userService->logout($user);
 
-        return $this->successWithoutData("User logged out successfully");
+        return $this->successWithoutData("Student logged out successfully");
     }
 }

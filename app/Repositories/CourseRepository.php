@@ -10,4 +10,9 @@ class CourseRepository
     {
         return Course::create($data);
     }
+
+    public function getAllTeacherCourses($teacherId)
+    {
+        return Course::where('teacher_id', $teacherId)->paginate(15);
+    }
 }

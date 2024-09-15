@@ -21,7 +21,7 @@ class CreateCourseRequest extends FormRequest
             'title' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:1000'],
             'image' => ['required', 'image', 'max:2048', 'mimes:jpeg,png,jpg'],
-            'video_url' => ['required', 'string', 'max:255'],
+            'video_url' => ['required', 'url', 'max:255'],
             'status' => ['integer', 'required', 'in:' . implode(',', CourseStatuses::toValuesArray())],
             'type' => ['integer', 'required', 'in:' . implode(',', CourseTypes::toValuesArray())],
         ];
