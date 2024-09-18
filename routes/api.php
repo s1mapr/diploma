@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\LessonController;
+use App\Http\Controllers\Api\TestController;
+use App\Http\Controllers\Api\VariantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -29,7 +31,21 @@ Route::prefix('courses')->controller(CourseController::class)->group(function ()
 
 Route::prefix('lessons')->controller(LessonController::class)->group(function () {
     Route::post('/{lesson}/content-block', 'createContentBlock')->middleware('auth:api_teacher');
+    Route::post('/{lesson}/test', 'createTest')->middleware('auth:api_teacher');
     Route::get('/{lesson}', 'getLessonData')->middleware('auth:api_teacher');
     Route::patch('/{lesson}', 'updateLesson')->middleware('auth:api_teacher');
     Route::delete('/{lesson}', 'deleteLesson')->middleware('auth:api_teacher');
+});
+
+Route::prefix('tests')->controller(TestController::class)->group(function () {
+    Route::post('/{test}/variant', 'createVariant')->middleware('auth:api_teacher');
+    Route::get('/{test}', 'getTestData')->middleware('auth:api_teacher');
+    Route::patch('/{test}', 'updateTest')->middleware('auth:api_teacher');
+    Route::delete('/{test}', 'deleteTest')->middleware('auth:api_teacher');
+});
+
+Route::prefix('variants')->controller(VariantController::class)->group(function () {
+    Route::get('/{variant}', 'getVariantData')->middleware('auth:api_teacher');
+    Route::patch('/{variant}', 'updateVariant')->middleware('auth:api_teacher');
+    Route::delete('/{variant}', 'deleteVariant')->middleware('auth:api_teacher');
 });

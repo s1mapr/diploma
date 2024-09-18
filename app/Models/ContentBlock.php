@@ -26,12 +26,11 @@ class ContentBlock extends Model
         'type' => ContentTypes::class,
     ];
 
-    protected function imageUrl(): Attribute
+    protected function content(): Attribute
     {
-        $type = $this->type;
         return Attribute::make(
-            get: fn(?string $value) => $value !== null ?
-                config('services.storage_base_url') . $value : null
+            get: fn( $value) => $this->type === ContentTypes::IMAGE ?
+                config('services.storage_base_url') . $value : $value
         );
     }
 }
