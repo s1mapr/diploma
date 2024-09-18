@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ContentTypes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,4 +25,12 @@ class ContentBlock extends Model
     protected $casts = [
         'type' => ContentTypes::class,
     ];
+
+    protected function content(): Attribute
+    {
+        return Attribute::make(
+            get: fn( $value) => $this->type === ContentTypes::IMAGE ?
+                config('services.storage_base_url') . $value : $value
+        );
+    }
 }

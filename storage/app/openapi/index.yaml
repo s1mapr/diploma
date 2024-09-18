@@ -10,6 +10,8 @@ tags:
   - name: 1. Authentication
   - name: 2. Courses
   - name: 3. Lessons
+  - name: 4. Tests
+  - name: 5. Variants
 
 paths:
   /api/auth/student-login:
@@ -159,7 +161,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -177,11 +179,9 @@ paths:
                   type: string
                   format: password
                   example: "password123"
-                avatar_url:
+                image:
                   type: string
-                  format: url
-                  nullable: true
-                  example: "https://example.com/avatar.jpg"
+                  format: binary
       responses:
         '200':
           description: Success
@@ -837,6 +837,20 @@ paths:
                             type:
                               type: integer
                               example: 1
+                      tests:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            content:
+                              type: string
+                              example: "sddsd"
+                            lesson_id:
+                              type: integer
+                              example: 1
         '404':
           description: Lesson not found
           content:
@@ -853,7 +867,7 @@ paths:
 
       security:
         - bearerAuth: [ ]
-    put:
+    patch:
       summary: Update Lesson
       description: Updates the details of an existing lesson.
       tags:
@@ -988,6 +1002,486 @@ paths:
                     example: "Lesson not found"
       security:
         - bearerAuth: [ ]
+  /api/lessons/{lessonId}/test:
+    post:
+      tags:
+        - 4. Tests
+      summary: Create a test for the lesson
+      description: Create a new test related to a specific lesson.
+      operationId: createTest
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the lesson.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "Example test content"
+      responses:
+        '200':
+          description: Test created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      test:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 2
+                          content:
+                            type: string
+                            example: "sec test"
+                          lesson_id:
+                            type: integer
+                            example: 1
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The given data was invalid."
+                  errors:
+                    type: object
+                    properties:
+                      content:
+                        type: array
+                        items:
+                          type: string
+                          example: "The content field is required."
+      security:
+        - bearerAuth: [ ]
+  /api/tests/{testId}:
+    get:
+      tags:
+        - 4. Tests
+      summary: Get a test and its variants
+      description: Retrieve a test by ID along with its associated answer variants.
+      operationId: getTest
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the test.
+      responses:
+        '200':
+          description: Test retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      test:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          content:
+                            type: string
+                            example: "first test"
+                          lesson_id:
+                            type: integer
+                            example: 1
+                      variants:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            value:
+                              type: string
+                              example: "23sds"
+                            is_correct:
+                              type: boolean
+                              example: true
+        '404':
+          description: Test not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Test not found."
+      security:
+        - bearerAuth: [ ]
+    patch:
+      tags:
+        - 4. Tests
+      summary: Update a test
+      description: Update the content of a test by its ID.
+      operationId: updateTest
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the test.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "hahahahaha"
+      responses:
+        '200':
+          description: Test updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      test:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          content:
+                            type: string
+                            example: "hahahahaha"
+                          lesson_id:
+                            type: integer
+                            example: 1
+        '404':
+          description: Test not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Test not found."
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The given data was invalid."
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - 4. Tests
+      summary: Delete a test
+      description: Delete a test by its ID.
+      operationId: deleteTest
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the test to delete.
+      responses:
+        '200':
+          description: Test deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: string
+                    example: "Test deleted successfully!"
+        '404':
+          description: Test not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Test not found."
+      security:
+        - bearerAuth: [ ]
+  /api/tests/{testId}/variant:
+    post:
+      tags:
+        - 5. Tests variants
+      summary: Create a variant for the test
+      description: Create a new variant (answer option) related to a specific test.
+      operationId: createVariant
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the test.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  example: "Sample answer"
+                is_correct:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Variant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      variant:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 2
+                          value:
+                            type: string
+                            example: "23sds"
+                          is_correct:
+                            type: boolean
+                            example: true
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The given data was invalid."
+                  errors:
+                    type: object
+                    properties:
+                      value:
+                        type: array
+                        items:
+                          type: string
+                          example: "The value field is required."
+                      is_correct:
+                        type: array
+                        items:
+                          type: string
+                          example: "The is_correct field is required."
+      security:
+        - bearerAuth: [ ]
+  /api/variants/{variantId}:
+    get:
+      tags:
+        - 5. Tests variants
+      summary: Get a variant
+      description: Retrieve a variant by its ID.
+      operationId: getVariant
+      parameters:
+        - name: variantId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the variant to retrieve.
+      responses:
+        '200':
+          description: Variant retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      variant:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          value:
+                            type: string
+                            example: "23sds"
+                          is_correct:
+                            type: boolean
+                            example: false
+        '404':
+          description: Variant not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Variant not found."
+      security:
+        - bearerAuth: [ ]
+    patch:
+      tags:
+        - 5. Tests variants
+      summary: Update a variant
+      description: Update the details of a variant by its ID.
+      operationId: updateVariant
+      parameters:
+        - name: variantId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the variant to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  example: "23sds"
+                is_correct:
+                  type: boolean
+                  example: false
+      responses:
+        '200':
+          description: Variant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      variant:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          value:
+                            type: string
+                            example: "23sds"
+                          is_correct:
+                            type: boolean
+                            example: false
+        '404':
+          description: Variant not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Variant not found."
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - 5. Tests variants
+      summary: Delete a variant
+      description: Delete a variant by its ID.
+      operationId: deleteVariant
+      parameters:
+        - name: variantId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the variant to delete.
+      responses:
+        '200':
+          description: Variant deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: string
+                    example: "Variant deleted successfully!"
+        '404':
+          description: Variant not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Variant not found."
+      security:
+        - bearerAuth: [ ]
+
 components:
   securitySchemes:
     bearerAuth:
