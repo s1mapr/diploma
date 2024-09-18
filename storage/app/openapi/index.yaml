@@ -346,6 +346,7 @@ paths:
                     example: "Unauthenticated."
       security:
         - bearerAuth: [ ]
+  /api/courses/teacher:
     get:
       summary: Get All Teacher Courses
       description: Retrieves all courses created by the authenticated teacher.

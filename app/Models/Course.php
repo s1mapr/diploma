@@ -48,4 +48,9 @@ class Course extends Model
                 config('services.storage_base_url') . $value : null
         );
     }
+    public function students()
+    {
+        return $this->belongsToMany(Student::class)
+            ->using(CourseStudent::class);
+    }
 }

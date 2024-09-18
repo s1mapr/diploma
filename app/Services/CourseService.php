@@ -84,4 +84,9 @@ class CourseService
     {
         $course->delete();
     }
+
+    public function subscribeToCourse(Course $course, mixed $user)
+    {
+        $course->students()->attach($user->id);
+    }
 }
