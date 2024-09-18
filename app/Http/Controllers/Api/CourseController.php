@@ -83,4 +83,14 @@ class CourseController extends Controller
             'message' => 'Course deleted successfully'
         ]);
     }
+
+    public function subscribeToCourse(Course $course, Request $request)
+    {
+        $user = $request->user();
+        $this->courseService->subscribeToCourse($course, $user);
+
+        return $this->successWithoutData([
+            'message' => 'Subscribed to course successfully'
+        ]);
+    }
 }
