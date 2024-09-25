@@ -26,4 +26,9 @@ class Lesson extends Model
     protected $casts = [
         'status' => LessonStatuses::class,
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }

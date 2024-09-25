@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\UserAnswerRequest;
 use App\Models\Lesson;
 use App\Models\Test;
 use App\Repositories\TestRepository;
@@ -9,10 +10,12 @@ use App\Repositories\TestRepository;
 class TestService
 {
     private TestRepository $testRepository;
+    private OpenAIService $openAIService;
 
-    public function __construct(TestRepository $testRepository)
+    public function __construct(TestRepository $testRepository, OpenAIService $openAIService)
     {
         $this->testRepository = $testRepository;
+        $this->openAIService = $openAIService;
     }
 
     public function createTest(Lesson $lesson, array $data)
@@ -35,5 +38,15 @@ class TestService
     public function findAllTestsOfLesson(Lesson $lesson)
     {
         return $this->testRepository->findAllTestsOfLesson($lesson->id);
+    }
+
+    public function getExplanationOfTest(Test $test, array $userAnswer, array $rightAnswers)
+    {
+        $userAnswerString = implode(', ', $userAnswer);
+        $rightAnswersString = implode(', ', $rightAnswers);
+
+        $exp = $this->openAIService->getExplanation($test->content, $userAnswerString, $rightAnswersString);
+
+        return $exp;
     }
 }

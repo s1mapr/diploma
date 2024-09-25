@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Enums\CourseStatuses;
 use App\Models\Course;
+use App\Models\Student;
 use App\Models\Teacher;
 use App\Repositories\CourseRepository;
+use App\Repositories\LessonRepository;
 use Illuminate\Support\Facades\DB;
 
 class CourseService
@@ -16,14 +18,16 @@ class CourseService
     protected const CODE_LENGTH = 8;
 
     private CourseRepository $courseRepository;
+    private LessonRepository $lessonRepository;
     private S3Service $s3Service;
     private UniqueCodesService $uniqueCodesGenerationService;
 
-    public function __construct(CourseRepository $courseRepository, S3Service $s3Service, UniqueCodesService $uniqueCodesGenerationService)
+    public function __construct(CourseRepository $courseRepository, S3Service $s3Service, UniqueCodesService $uniqueCodesGenerationService, LessonRepository $lessonRepository)
     {
         $this->courseRepository = $courseRepository;
         $this->s3Service = $s3Service;
         $this->uniqueCodesGenerationService = $uniqueCodesGenerationService;
+        $this->lessonRepository = $lessonRepository;
     }
 
     public function createCourse(Teacher $user, array $data)
@@ -33,10 +37,10 @@ class CourseService
         try {
             DB::beginTransaction();
 
-            $data['connection_code']='CODE';
+            $data['connection_code'] = 'CODE';
             $course = $this->courseRepository->createCourse($data);
 
-            if(isset($data['image'])) {
+            if (isset($data['image'])) {
                 $data['image_url'] = $this->s3Service->uploadFile(
                     'courses/' . $course->id,
                     $data['image'],
@@ -68,7 +72,7 @@ class CourseService
 
     public function updateCourse(Course $course, array $data)
     {
-        if(isset($data['image'])) {
+        if (isset($data['image'])) {
             $data['image_url'] = $this->s3Service->uploadFile(
                 'courses/' . $course->id,
                 $data['image'],
@@ -85,8 +89,52 @@ class CourseService
         $course->delete();
     }
 
-    public function subscribeToCourse(Course $course, mixed $user)
+    public function subscribeToCourse(Course $course, Student $user)
     {
-        $course->students()->attach($user->id);
+        $this->subscribeToCourseAndLessons($course, $user);
+    }
+
+    public function getAllStudentCourses(Student $student)
+    {
+        return $this->courseRepository->getAllStudentCourses($student->id);
+    }
+
+    public function getAllActiveCourses()
+    {
+        return $this->courseRepository->getAllActiveCourses();
+    }
+
+    public function addCourseByCode(Student $user, string $connection_code)
+    {
+        $course = $this->courseRepository->getCourseByCode($connection_code);
+
+        if ($course === null || $course->status !== CourseStatuses::ACTIVE) {
+            throw new \Exception('No such course');
+        }
+
+        $this->subscribeToCourseAndLessons($course, $user);
+
+        return $course;
+    }
+
+    public function isSubscribedToCourse(Course $course, Student $user)
+    {
+        return $course->students()->where('student_id', $user->id)->exists();
+    }
+
+    private function subscribeToCourseAndLessons(Course $course, Student $student)
+    {
+        if (!$this->isSubscribedToCourse($course, $student)) {
+            $lessons = $this->lessonRepository->findAllPublishedLessonsOfCourse($course->id);
+
+            foreach ($lessons as $lesson) {
+                $student->courses()->attach($student->id, [
+                    'lesson_id' => $lesson->id,
+                    'is_completed' => false,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

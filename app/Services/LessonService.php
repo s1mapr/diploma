@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\Student;
 use App\Repositories\LessonRepository;
 
 class LessonService
@@ -35,5 +36,19 @@ class LessonService
     public function deleteLesson(Lesson $lesson)
     {
         $lesson->delete();
+    }
+
+    public function finishLesson(Lesson $lesson, Student $student)
+    {
+        $student->courses()->where('lesson_id', $lesson->id)->update([
+            'is_completed' => true,
+        ]);
+    }
+
+    public function setTestResult(Lesson $lesson, Student $user, float $result)
+    {
+        $user->courses()->where('lesson_id', $lesson->id)->update([
+            'test_result' => $result,
+        ]);
     }
 }

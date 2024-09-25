@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
             TeacherSeeder::class,
             AdminSeeder::class,
             CategorySeeder::class,
+            CourseSeeder::class,
+            LessonSeeder::class,
+            ContentBlockSeeder::class,
+            TestSeeder::class,
+            VariantSeeder::class,
         ]);
     }
 }

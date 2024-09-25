@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\RoleTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,7 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
 */
 class Student extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, RoleTrait;
 
     protected $fillable = [
         'first_name',
@@ -42,5 +43,12 @@ class Student extends Authenticatable
             get: fn(?string $value) => $value !== null ?
                 config('services.storage_base_url') . $value : null
         );
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)
+            ->using(CourseStudent::class)
+            ->withPivot('lesson_id', 'is_completed', 'test_result');
     }
 }

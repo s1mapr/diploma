@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateVariantRequest;
+use App\Http\Requests\SendTestResultRequest;
 use App\Http\Requests\UpdateTestRequest;
 use App\Http\Requests\UpdateVariantRequest;
+use App\Http\Requests\UserAnswerRequest;
 use App\Http\Resources\TestResource;
 use App\Http\Resources\VariantResource;
 use App\Models\Test;
@@ -57,5 +59,17 @@ class TestController extends Controller
         $this->testService->deleteTest($test);
 
         return $this->successWithoutData("Test deleted successfully!");
+    }
+
+    public function getExplanationOfTest(UserAnswerRequest $request, Test $test)
+    {
+        $userAnswer = $request->userAnswers;
+        $rightAnswers = $this->variantService->getRightAnswersStringArray($test);
+
+        $exp = $this->testService->getExplanationOfTest($test, $userAnswer, $rightAnswers);
+
+        return $this->success([
+            'explanation' => $exp,
+        ]);
     }
 }
