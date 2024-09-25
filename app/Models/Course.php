@@ -53,4 +53,9 @@ class Course extends Model
         return $this->belongsToMany(Student::class)
             ->using(CourseStudent::class);
     }
+
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class);
+    }
 }

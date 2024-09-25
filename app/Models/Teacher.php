@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\RoleTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -17,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 */
 class Teacher extends Authenticatable
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory, HasApiTokens, RoleTrait;
 
     protected $fillable = [
         'email',

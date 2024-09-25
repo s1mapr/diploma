@@ -11,7 +11,8 @@ tags:
   - name: 2. Courses
   - name: 3. Lessons
   - name: 4. Tests
-  - name: 5. Variants
+  - name: 5. Tests variants
+  - name: 6. Students
 
 paths:
   /api/auth/student-login:
@@ -346,6 +347,162 @@ paths:
                     example: "Unauthenticated."
       security:
         - bearerAuth: [ ]
+    get:
+      summary: Get paginated list of courses
+      tags:
+        - 2. Courses
+      responses:
+        '200':
+          description: List of courses with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 5
+                      courses:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            teacher_id:
+                              type: integer
+                              example: 1
+                            category_id:
+                              type: integer
+                              example: 1
+                            title:
+                              type: string
+                              example: Est labore veritatis modi reiciendis aut nihil.
+                            description:
+                              type: string
+                              example: Voluptatum nobis exercitationem at doloremque quasi ex...
+                            image_url:
+                              type: string
+                              example: https://s1ma-diploma-dev.s3.amazonaws.com/https://via.placeholder.com/640x480.png/00ff11?text=distinctio
+                            video_url:
+                              type: string
+                              example: https://koss.com/consequatur-possimus-vel-optio-et-numquam-sint-deserunt.html
+                            status:
+                              type: integer
+                              example: 1
+                            type:
+                              type: integer
+                              example: 1
+                            connection_code:
+                              type: string
+                              example: iCtzgQZY
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Bad request, invalid data.
+      security:
+        - bearerAuth: [ ]
+  /api/courses/add-by-code:
+    post:
+      summary: Add course by connection code
+      tags:
+        - 2. Courses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                connection_code:
+                  type: string
+                  example: xPLssXdJ
+              required:
+                - connection_code
+      responses:
+        '200':
+          description: Course added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      course:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 3
+                          teacher_id:
+                            type: integer
+                            example: 1
+                          category_id:
+                            type: integer
+                            example: 1
+                          title:
+                            type: string
+                            example: Quasi provident facere sint dolor aliquam.
+                          description:
+                            type: string
+                            example: Dolores nemo possimus laudantium blanditiis error...
+                          image_url:
+                            type: string
+                            example: https://s1ma-diploma-dev.s3.amazonaws.com/https://via.placeholder.com/640x480.png/001133?text=fugiat
+                          video_url:
+                            type: string
+                            example: http://pfeffer.com/quam-beatae-sit-rerum-rerum-nihil-reiciendis.html
+                          status:
+                            type: integer
+                            example: 1
+                          type:
+                            type: integer
+                            example: 1
+                          connection_code:
+                            type: string
+                            example: xPLssXdJ
+        '400':
+          description: Invalid connection code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Connection code is invalid or course not found.
+      security:
+        - bearerAuth: [ ]
   /api/courses/teacher:
     get:
       summary: Get All Teacher Courses
@@ -428,20 +585,19 @@ paths:
 
   /api/courses/{course_id}:
     get:
-      summary: Get Course Data
-      description: Retrieves course data along with its lessons.
+      summary: Get course details by ID
       tags:
         - 2. Courses
       parameters:
-        - name: course_id
+        - name: id
           in: path
           required: true
           schema:
             type: integer
-          description: The ID of the course to retrieve.
+          description: ID of the course
       responses:
         '200':
-          description: Course data and lessons retrieved successfully
+          description: Course details
           content:
             application/json:
               schema:
@@ -449,10 +605,14 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "Request successful"
+                    example: Request successful
                   data:
                     type: object
                     properties:
+                      is_subscribed:
+                        type: boolean
+                        description: Whether the user is subscribed to the course (only for students)
+                        example: true
                       course:
                         type: object
                         properties:
@@ -467,25 +627,25 @@ paths:
                             example: 1
                           title:
                             type: string
-                            example: "new titleds"
+                            example: Est labore veritatis modi reiciendis aut nihil.
                           description:
                             type: string
-                            example: "new description"
+                            example: Voluptatum nobis exercitationem at doloremque quasi ex...
                           image_url:
                             type: string
-                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/courses/1/course_pic_66e7198db6e4a8.86106661.jpg"
+                            example: https://s1ma-diploma-dev.s3.amazonaws.com/https://via.placeholder.com/640x480.png/00ff11?text=distinctio
                           video_url:
                             type: string
-                            example: "https://www.youtube.com/watch?v=iXZDkqIZJpw"
+                            example: https://koss.com/consequatur-possimus-vel-optio-et-numquam-sint-deserunt.html
                           status:
                             type: integer
-                            example: 2
+                            example: 1
                           type:
                             type: integer
                             example: 1
                           connection_code:
                             type: string
-                            example: "AA318DNA"
+                            example: iCtzgQZY
                       lessons:
                         type: array
                         items:
@@ -493,18 +653,18 @@ paths:
                           properties:
                             id:
                               type: integer
-                              example: 2
+                              example: 10
                             title:
                               type: string
-                              example: "new lesson"
+                              example: Aut amet itaque doloribus.
                             estimation:
                               type: string
-                              example: "234"
+                              example: 2.81
                             status:
                               type: integer
                               example: 2
-        '404':
-          description: Course not found
+        '400':
+          description: Bad request
           content:
             application/json:
               schema:
@@ -512,10 +672,10 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "error"
+                    example: Error
                   message:
                     type: string
-                    example: "Course not found"
+                    example: Bad request, invalid data.
       security:
         - bearerAuth: [ ]
     delete:
@@ -780,6 +940,196 @@ paths:
                       items:
                         type: string
                         example: "The title field is required."
+      security:
+        - bearerAuth: [ ]
+  /api/lessons/{id}/finish:
+    post:
+      summary: Finish a lesson by ID
+      tags:
+        - 3. Lessons
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the lesson to finish
+      responses:
+        '200':
+          description: Lesson successfully completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  message:
+                    type: string
+                    example: Lesson completed successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Invalid lesson ID or request data.
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Lesson not found.
+      security:
+        - bearerAuth: [ ]
+  /api/lessons/{id}/test-result:
+    post:
+      summary: Submit test result for a lesson
+      tags:
+        - 3. Lessons
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the lesson for which the test result is submitted
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: number
+                  format: float
+                  example: 23.5
+              required:
+                - result
+      responses:
+        '200':
+          description: Test result successfully submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  message:
+                    type: string
+                    example: Test result sent successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Invalid result or request data.
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Lesson not found.
+      security:
+        - bearerAuth: [ ]
+  /api/lessons/{id}/tests:
+    get:
+      summary: Get list of tests for a lesson
+      tags:
+        - 3. Lessons
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the lesson to retrieve tests for
+      responses:
+        '200':
+          description: Successfully retrieved list of tests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      tests:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 130
+                            content:
+                              type: string
+                              example: "Enim nemo libero vero aut sint quia."
+                            lesson_id:
+                              type: integer
+                              example: 1
+                            variants:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: integer
+                                    example: 320
+                                  value:
+                                    type: string
+                                    example: "Eum ex quasi aut vel consequatur."
+                                  is_correct:
+                                    type: boolean
+                                    example: true
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Lesson not found.
       security:
         - bearerAuth: [ ]
   /api/lessons/{lesson_id}:
@@ -1249,6 +1599,64 @@ paths:
                     example: "Test not found."
       security:
         - bearerAuth: [ ]
+  /api/tests/{id}/explanation:
+    get:
+      summary: Get explanation for a test based on user answers
+      tags:
+        - 4. Tests
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the test to retrieve explanation for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userAnswers:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - "абоба"
+                    - "Болгарія"
+      responses:
+        '200':
+          description: Successfully retrieved explanation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      explanation:
+                        type: string
+                        example: 'Відповідь "абоба, Болгарія" не є правильною, оскільки вона не відповідає на запитання, яке було задане. У тестовому запитанні було запитано про речення, яке є правильним, а ваша відповідь містить іншу інформацію. Тому правильними відповідями на це питання є "Corporis dolorum".'
+        '404':
+          description: Test not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Test not found.
+      security:
+        - bearerAuth: [ ]
   /api/tests/{testId}/variant:
     post:
       tags:
@@ -1480,6 +1888,152 @@ paths:
                   message:
                     type: string
                     example: "Variant not found."
+      security:
+        - bearerAuth: [ ]
+  /api/students/courses:
+    get:
+      summary: Retrieve the list of courses for a student
+      tags:
+        - 6. Students
+      responses:
+        '200':
+          description: Successfully retrieved courses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 1
+                      courses:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            teacher_id:
+                              type: integer
+                              example: 1
+                            category_id:
+                              type: integer
+                              example: 1
+                            title:
+                              type: string
+                              example: "Est labore veritatis modi reiciendis aut nihil."
+                            description:
+                              type: string
+                              example: "Voluptatum nobis exercitationem at doloremque quasi ex. Quae quis aut totam cupiditate temporibus. Est blanditiis omnis reprehenderit consectetur facere eius impedit. Velit ipsam iste corporis soluta."
+                            image_url:
+                              type: string
+                              example: "https://s1ma-diploma-dev.s3.amazonaws.com/https://via.placeholder.com/640x480.png/00ff11?text=distinctio"
+                            video_url:
+                              type: string
+                              example: "https://koss.com/consequatur-possimus-vel-optio-et-numquam-sint-deserunt.html"
+                            status:
+                              type: integer
+                              example: 1
+                            type:
+                              type: integer
+                              example: 1
+                            connection_code:
+                              type: string
+                              example: "iCtzgQZY"
+        '404':
+          description: No courses found for the student
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: No courses found for the student.
+      security:
+        - bearerAuth: [ ]
+  /api/students/:
+    patch:
+      summary: Update student information
+      tags:
+        - 6. Students
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: "Aboba"
+                last_name:
+                  type: string
+                  example: "Prokopenko"
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successfully updated student information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      student:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          first_name:
+                            type: string
+                            example: "Aboba"
+                          last_name:
+                            type: string
+                            example: "Prokopenko"
+                          email:
+                            type: string
+                            example: "dd@gmail.com"
+                          avatar_url:
+                            type: string
+                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/users/students/1/avatar_66f3970b6391b9.27299048.jpg"
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: "Validation failed for one or more fields."
       security:
         - bearerAuth: [ ]
 

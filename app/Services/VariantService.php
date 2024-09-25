@@ -36,4 +36,14 @@ class VariantService
     {
         $variant->delete();
     }
+
+    public function getRightAnswersStringArray(Test $test)
+    {
+        $rightAnswers = $this->variantRepository->getRightAnswers($test->id);
+        foreach ($rightAnswers as $rightAnswer) {
+            $rightAnswersArray[] = $rightAnswer->value;
+        }
+
+        return $rightAnswersArray;
+    }
 }

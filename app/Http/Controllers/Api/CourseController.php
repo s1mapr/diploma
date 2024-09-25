@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddCourseByCodeRequest;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\CreateLessonRequest;
 use App\Http\Requests\UpdateCourseRequest;
@@ -43,9 +44,20 @@ class CourseController extends Controller
         ]);
     }
 
-    public function getCourseData(Course $course)
+    public function getCourseData(Request $request, Course $course)
     {
+        $user = $request->user();
         $lessons = $this->lessonService->findAllLessonsOfCourse($course);
+
+        if($user->isStudent())
+        {
+            $isSubscribed = $this->courseService->isSubscribedToCourse($course, $user);
+            return $this->success([
+                'is_subscribed' => $isSubscribed,
+                'course' => CourseResource::make($course),
+                'lessons' => LessonResource::collection($lessons)
+            ]);
+        }
 
         return $this->success([
             'course' => CourseResource::make($course),
@@ -91,6 +103,28 @@ class CourseController extends Controller
 
         return $this->successWithoutData([
             'message' => 'Subscribed to course successfully'
+        ]);
+    }
+
+    public function getAllActiveCourses()
+    {
+        $courses = $this->courseService->getAllActiveCourses();
+
+        return $this->success([
+            'current_page'=> $courses->currentPage(),
+            'last_page'=> $courses->lastPage(),
+            'total'=> $courses->total(),
+            'courses' => CourseResource::collection($courses)
+        ]);
+    }
+
+    public function addCourseByCode(AddCourseByCodeRequest $request)
+    {
+        $user = $request->user();
+        $course = $this->courseService->addCourseByCode($user, $request->connection_code);
+
+        return $this->success([
+            'course' => CourseResource::make($course)
         ]);
     }
 }

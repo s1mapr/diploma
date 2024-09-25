@@ -18,4 +18,9 @@ class Test extends Model
         'lesson_id',
         'content',
     ];
+
+    public function variants()
+    {
+        return $this->hasMany(Variant::class);
+    }
 }

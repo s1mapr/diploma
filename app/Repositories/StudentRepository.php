@@ -15,4 +15,11 @@ class StudentRepository
     {
         return Student::create($data);
     }
+
+    public function updateStudent(Student $student, array $data)
+    {
+        $student->update($data);
+
+        return $student;
+    }
 }

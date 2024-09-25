@@ -15,4 +15,9 @@ class VariantRepository
     {
         return Variant::where('test_id', $id)->get();
     }
+
+    public function getRightAnswers($id)
+    {
+        return Variant::where('test_id', $id)->where('is_correct', 1)->get();
+    }
 }
