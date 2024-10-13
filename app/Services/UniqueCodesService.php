@@ -49,31 +49,36 @@ class UniqueCodesService
     public function setObfuscatingPrime(int $obfuscatingPrime): self
     {
         $this->obfuscatingPrime = $obfuscatingPrime;
+
         return $this;
     }
 
     public function setMaxPrime(int $maxPrime): self
     {
         $this->maxPrime = $maxPrime;
+
         return $this;
     }
 
     public function setSuffix(string $suffix): self
     {
         $this->suffix = $suffix;
+
         return $this;
     }
 
     public function setPrefix(string $prefix): self
     {
         $this->prefix = $prefix;
+
         return $this;
     }
 
-    public function setDelimiter(string $delimiter, int $splitLength = null): self
+    public function setDelimiter(string $delimiter, ?int $splitLength = null): self
     {
         $this->delimiter = $delimiter;
         $this->splitLength = $splitLength;
+
         return $this;
     }
 
@@ -84,16 +89,18 @@ class UniqueCodesService
         }
 
         $this->characters = $characters;
+
         return $this;
     }
 
     public function setLength(int $length): self
     {
         $this->length = $length;
+
         return $this;
     }
 
-    public function generate(int $start, int $end = null, bool $toArray = false): array|\Generator|string
+    public function generate(int $start, ?int $end = null, bool $toArray = false): array|\Generator|string
     {
         $this->validateInput($start, $end);
 
@@ -131,8 +138,8 @@ class UniqueCodesService
         $characters = $this->characters;
 
         for ($i = 0; $i < $this->length; $i++) {
-            $digit = (int)floor($number % strlen($characters));
-            $string = $characters[$digit] . $string;
+            $digit = (int) floor($number % strlen($characters));
+            $string = $characters[$digit].$string;
             $number = floor($number / strlen($characters));
         }
 
@@ -144,7 +151,7 @@ class UniqueCodesService
         $code = '';
 
         if ($this->prefix !== null) {
-            $code .= $this->prefix . $this->delimiter;
+            $code .= $this->prefix.$this->delimiter;
         }
 
         if ($this->splitLength !== null) {
@@ -154,13 +161,13 @@ class UniqueCodesService
         }
 
         if ($this->suffix !== null) {
-            $code .= $this->delimiter . $this->suffix;
+            $code .= $this->delimiter.$this->suffix;
         }
 
         return $code;
     }
 
-    protected function validateInput(int $start, int $end = null): void
+    protected function validateInput(int $start, ?int $end = null): void
     {
         if (empty($this->obfuscatingPrime)) {
             throw new RuntimeException('Obfuscating prime number must be specified');
@@ -188,7 +195,7 @@ class UniqueCodesService
 
         if ($this->getMaximumUniqueCodes() <= $this->maxPrime) {
             throw new RuntimeException(
-                'The length of the code is too short or the character list is too small ' .
+                'The length of the code is too short or the character list is too small '.
                 'to create the number of unique codes equal to the max prime number'
             );
         }
@@ -204,6 +211,6 @@ class UniqueCodesService
 
     protected function getMaximumUniqueCodes(): int
     {
-        return (int)pow(strlen($this->characters), $this->length);
+        return (int) pow(strlen($this->characters), $this->length);
     }
 }

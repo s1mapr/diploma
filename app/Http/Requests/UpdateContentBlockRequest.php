@@ -14,14 +14,14 @@ class UpdateContentBlockRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'type' => ['integer', 'in:' . implode(',', ContentTypes::toValuesArray())],
+            'type' => ['integer', 'in:'.implode(',', ContentTypes::toValuesArray())],
         ];
 
         if ($this->input('type') == ContentTypes::TEXT->value) {
             $rules['content'] = ['string', 'max:4000'];
-        } else if ($this->input('type') == ContentTypes::IMAGE->value) {
+        } elseif ($this->input('type') == ContentTypes::IMAGE->value) {
             $rules['content'] = ['image', 'max:2048', 'mimes:jpeg,png,jpg'];
-        } else if ($this->input('type') == ContentTypes::VIDEO->value) {
+        } elseif ($this->input('type') == ContentTypes::VIDEO->value) {
             $rules['content'] = ['url', 'max:255'];
         }
 

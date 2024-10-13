@@ -18,6 +18,7 @@ class VariantService
     public function createVariant(Test $test, array $data)
     {
         $data['test_id'] = $test->id;
+
         return $this->variantRepository->createVariant($data);
     }
 
@@ -29,6 +30,7 @@ class VariantService
     public function updateVariant(Variant $variant, array $data)
     {
         $variant->update($data);
+
         return $variant;
     }
 

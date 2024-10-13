@@ -18,6 +18,6 @@ class Variant extends Model
     protected $fillable = [
         'test_id',
         'value',
-        'is_correct'
+        'is_correct',
     ];
 }

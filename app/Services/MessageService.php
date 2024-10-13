@@ -24,5 +24,4 @@ class MessageService
     {
         $this->messageRepository->deleteMessage($message->id);
     }
-
 }

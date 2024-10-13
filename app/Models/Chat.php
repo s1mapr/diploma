@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $student_id
  * @property int $teacher_id
- * @property boolean $is_started
-*/
+ * @property bool $is_started
+ */
 class Chat extends Model
 {
     use HasFactory;

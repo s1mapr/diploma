@@ -9,15 +9,15 @@ trait HttpResponseTrait
     protected function success($data, $code = 200): JsonResponse
     {
         return response()->json([
-            'status' => "Request successful",
-            'data' => $data
+            'status' => 'Request successful',
+            'data' => $data,
         ], $code);
     }
 
     protected function successWithoutData($message = null, $code = 200): JsonResponse
     {
         return response()->json([
-            'status' => "Request successful",
+            'status' => 'Request successful',
             'message' => $message,
         ], $code);
     }
@@ -25,7 +25,7 @@ trait HttpResponseTrait
     protected function error($message = null, $code = 400): JsonResponse
     {
         return response()->json([
-            'status' => "Request failed",
+            'status' => 'Request failed',
             'message' => $message,
         ], $code);
     }
