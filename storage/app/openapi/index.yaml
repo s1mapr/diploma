@@ -13,6 +13,7 @@ tags:
   - name: 4. Tests
   - name: 5. Tests variants
   - name: 6. Students
+  - name: 8. Content Blocks
 
 paths:
   /api/auth/student-login:
@@ -424,6 +425,116 @@ paths:
                     example: Bad request, invalid data.
       security:
         - bearerAuth: [ ]
+  /api/courses/{course}/subscribe:
+    post:
+      tags:
+        - 2. Courses
+      summary: Subscribe to a course
+      description: |
+        This endpoint allows students to subscribe to a specific course. The student must be authenticated with a valid API token.
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: course
+          schema:
+            type: integer
+          required: true
+          description: The ID of the course to subscribe to.
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Subscribed to course successfully"
+  /api/courses/search:
+    get:
+      tags:
+        - 2. Courses
+      summary: Search courses by title or connection code
+      description: |
+        This endpoint allows students to search for courses by their title or connection code. Only courses with a status of `1` and type of `1` will be included in the search results.
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: search_query
+          schema:
+            type: string
+          required: true
+          description: The keyword to search by course title or connection code.
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      courses:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 21
+                            teacher_id:
+                              type: integer
+                              example: 1
+                            category_id:
+                              type: integer
+                              example: 1
+                            title:
+                              type: string
+                              example: "new titleds2"
+                            description:
+                              type: string
+                              example: "new description"
+                            image_url:
+                              type: string
+                              example: "https://s1ma-diploma-dev.s3.amazonaws.com/courses/21/course_pic_670b92461fb591.12161147.jpg"
+                            video_url:
+                              type: string
+                              example: "https://www.youtube.com/watch?v=iXZDkqIZJpw"
+                            status:
+                              type: integer
+                              example: 1
+                            type:
+                              type: integer
+                              example: 1
+                            connection_code:
+                              type: string
+                              example: "AA3DAG3N"
+        '401':
+          description: Unauthorized - Token missing or invalid
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The search_query field is required."
   /api/courses/add-by-code:
     post:
       summary: Add course by connection code
@@ -2037,6 +2148,136 @@ paths:
       security:
         - bearerAuth: [ ]
 
+  /api/content-blocks/{contentBlock}:
+    get:
+      tags:
+        - 8. Content Blocks
+      summary: Get content block data
+      description: |
+        This endpoint retrieves data for a specific content block by its ID. The teacher must be authenticated with a valid API token.
+      operationId: getContentBlockData
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: contentBlock
+          schema:
+            type: integer
+          required: true
+          description: The ID of the content block to retrieve.
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      content_block:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          content:
+                            type: string
+                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/https://via.placeholder.com/640x480.png/00ccbb?text=cats+consequatur"
+                          type:
+                            type: integer
+                            example: 2
+    patch:
+      tags:
+        - 8. Content Blocks
+      summary: Update content block
+      description: |
+        This endpoint allows teachers to update an existing content block by providing the new content and type. The teacher must be authenticated with a valid API token.
+      operationId: updateContentBlock
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: contentBlock
+          schema:
+            type: integer
+          required: true
+          description: The ID of the content block to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: integer
+                  description: Type of content block (text, image, or video)
+                  example: 1
+                content:
+                  oneOf:
+                    - type: string
+                      description: Content for text blocks (up to 4000 characters)
+                      example: "This is a text content block."
+                    - type: string
+                      format: binary
+                      description: Uploaded image for image content blocks (max size 2048 KB)
+                      example: "image.jpg"
+                    - type: string
+                      format: url
+                      description: URL for video content blocks
+                      example: "https://example.com/video.mp4"
+              required:
+                - type
+                - content
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: string
+                    example: "Content block updated successfully"
+    delete:
+      tags:
+        - 8. Content Blocks
+      summary: Delete content block
+      description: |
+        This endpoint allows a teacher to delete a specific content block by its ID. The teacher must be authenticated with a valid API token.
+      operationId: deleteContentBlock
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: contentBlock
+          schema:
+            type: integer
+          required: true
+          description: The ID of the content block to delete.
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  message:
+                    type: string
+                    example: "Content block deleted successfully"
 components:
   securitySchemes:
     bearerAuth:

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddCourseByCodeRequest;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\CreateLessonRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\LessonResource;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
     private CourseService $courseService;
+
     private LessonService $lessonService;
 
     public function __construct(CourseService $courseService, LessonService $lessonService)
@@ -31,7 +33,7 @@ class CourseController extends Controller
         $course = $this->courseService->createCourse($user, $request->validated());
 
         return $this->success([
-            'course' => CourseResource::make($course)
+            'course' => CourseResource::make($course),
         ]);
     }
 
@@ -40,7 +42,7 @@ class CourseController extends Controller
         $lesson = $this->lessonService->createLesson($course, $request->validated());
 
         return $this->success([
-            'lesson' => LessonResource::make($lesson)
+            'lesson' => LessonResource::make($lesson),
         ]);
     }
 
@@ -49,19 +51,19 @@ class CourseController extends Controller
         $user = $request->user();
         $lessons = $this->lessonService->findAllLessonsOfCourse($course);
 
-        if($user->isStudent())
-        {
+        if ($user->isStudent()) {
             $isSubscribed = $this->courseService->isSubscribedToCourse($course, $user);
+
             return $this->success([
                 'is_subscribed' => $isSubscribed,
                 'course' => CourseResource::make($course),
-                'lessons' => LessonResource::collection($lessons)
+                'lessons' => LessonResource::collection($lessons),
             ]);
         }
 
         return $this->success([
             'course' => CourseResource::make($course),
-            'lessons' => LessonResource::collection($lessons)
+            'lessons' => LessonResource::collection($lessons),
         ]);
     }
 
@@ -71,10 +73,10 @@ class CourseController extends Controller
         $courses = $this->courseService->getAllTeacherCourses($user);
 
         return $this->success([
-            'current_page'=> $courses->currentPage(),
-            'last_page'=> $courses->lastPage(),
-            'total'=> $courses->total(),
-            'courses' => CourseResource::collection($courses)
+            'current_page' => $courses->currentPage(),
+            'last_page' => $courses->lastPage(),
+            'total' => $courses->total(),
+            'courses' => CourseResource::collection($courses),
         ]);
     }
 
@@ -83,7 +85,7 @@ class CourseController extends Controller
         $course = $this->courseService->updateCourse($course, $request->validated());
 
         return $this->success([
-            'course' => CourseResource::make($course)
+            'course' => CourseResource::make($course),
         ]);
     }
 
@@ -92,7 +94,7 @@ class CourseController extends Controller
         $this->courseService->deleteCourse($course);
 
         return $this->successWithoutData([
-            'message' => 'Course deleted successfully'
+            'message' => 'Course deleted successfully',
         ]);
     }
 
@@ -102,7 +104,7 @@ class CourseController extends Controller
         $this->courseService->subscribeToCourse($course, $user);
 
         return $this->successWithoutData([
-            'message' => 'Subscribed to course successfully'
+            'message' => 'Subscribed to course successfully',
         ]);
     }
 
@@ -111,10 +113,10 @@ class CourseController extends Controller
         $courses = $this->courseService->getAllActiveCourses();
 
         return $this->success([
-            'current_page'=> $courses->currentPage(),
-            'last_page'=> $courses->lastPage(),
-            'total'=> $courses->total(),
-            'courses' => CourseResource::collection($courses)
+            'current_page' => $courses->currentPage(),
+            'last_page' => $courses->lastPage(),
+            'total' => $courses->total(),
+            'courses' => CourseResource::collection($courses),
         ]);
     }
 
@@ -124,7 +126,16 @@ class CourseController extends Controller
         $course = $this->courseService->addCourseByCode($user, $request->connection_code);
 
         return $this->success([
-            'course' => CourseResource::make($course)
+            'course' => CourseResource::make($course),
+        ]);
+    }
+
+    public function searchCourses(SearchRequest $request)
+    {
+        $courses = $this->courseService->searchCourses($request->search_query);
+
+        return $this->success([
+            'courses' => CourseResource::collection($courses),
         ]);
     }
 }

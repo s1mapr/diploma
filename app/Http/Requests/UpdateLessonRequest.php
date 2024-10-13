@@ -17,7 +17,7 @@ class UpdateLessonRequest extends FormRequest
         return [
             'title' => ['string', 'max:100'],
             'estimation' => ['int', 'min:1'],
-            'status' => ['integer', 'in:' . implode(',', LessonStatuses::toValuesArray())],
+            'status' => ['integer', 'in:'.implode(',', LessonStatuses::toValuesArray())],
         ];
     }
 }

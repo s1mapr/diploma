@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @mixin ContentBlock
-*/
+ */
 class ContentBlockResource extends JsonResource
 {
     public function toArray(Request $request): array

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class StudentService
 {
     protected StudentRepository $studentRepository;
+
     protected S3Service $s3Service;
 
     public function __construct(StudentRepository $userRepository, S3Service $s3Service)
@@ -30,7 +31,7 @@ class StudentService
 
             if (isset($data['image'])) {
                 $data['avatar_url'] = $this->s3Service->uploadFile(
-                    'users/students/' . $user->id,
+                    'users/students/'.$user->id,
                     $data['image'],
                     uniqid('avatar_', true)
                 );
@@ -57,7 +58,7 @@ class StudentService
             DB::beginTransaction();
             if (isset($data['image'])) {
                 $data['avatar_url'] = $this->s3Service->uploadFile(
-                    'users/students/' . $student->id,
+                    'users/students/'.$student->id,
                     $data['image'],
                     uniqid('avatar_', true)
                 );

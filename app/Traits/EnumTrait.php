@@ -6,7 +6,7 @@ trait EnumTrait
 {
     public static function toValuesArray(): array
     {
-        return array_map(fn($type) => $type->value, self::cases());
+        return array_map(fn ($type) => $type->value, self::cases());
     }
 
     public static function getFromValue(int $value): ?self
@@ -16,6 +16,7 @@ trait EnumTrait
                 return $case;
             }
         }
+
         return null;
     }
 }

@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property $title
  * @property $estimation
  * @property $status
-*/
+ */
 class Lesson extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
+    protected $fillable = [
         'title',
         'estimation',
         'course_id',
-        'status'
+        'status',
     ];
 
     protected $casts = [

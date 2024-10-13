@@ -9,7 +9,8 @@ class S3Service
 {
     public function uploadFile(string $folder, UploadedFile $file, string $filenameWithoutExtension): string
     {
-        $fileName = $filenameWithoutExtension . "." . $file->getClientOriginalExtension();
+        $fileName = $filenameWithoutExtension.'.'.$file->getClientOriginalExtension();
+
         return $file->storeAs($folder, $fileName);
     }
 

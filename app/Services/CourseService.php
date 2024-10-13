@@ -13,13 +13,19 @@ use Illuminate\Support\Facades\DB;
 class CourseService
 {
     protected const OBFUSCATING_PRIME = 350561363;
+
     protected const MAX_PRIME = 83476331;
+
     protected const CHARACTERS_FOR_GENERATION = 'A92D47N8GF531V0X6';
+
     protected const CODE_LENGTH = 8;
 
     private CourseRepository $courseRepository;
+
     private LessonRepository $lessonRepository;
+
     private S3Service $s3Service;
+
     private UniqueCodesService $uniqueCodesGenerationService;
 
     public function __construct(CourseRepository $courseRepository, S3Service $s3Service, UniqueCodesService $uniqueCodesGenerationService, LessonRepository $lessonRepository)
@@ -42,7 +48,7 @@ class CourseService
 
             if (isset($data['image'])) {
                 $data['image_url'] = $this->s3Service->uploadFile(
-                    'courses/' . $course->id,
+                    'courses/'.$course->id,
                     $data['image'],
                     uniqid('course_pic_', true)
                 );
@@ -74,13 +80,14 @@ class CourseService
     {
         if (isset($data['image'])) {
             $data['image_url'] = $this->s3Service->uploadFile(
-                'courses/' . $course->id,
+                'courses/'.$course->id,
                 $data['image'],
                 uniqid('course_pic_', true)
             );
         }
 
         $course->update($data);
+
         return $course;
     }
 
@@ -124,7 +131,7 @@ class CourseService
 
     private function subscribeToCourseAndLessons(Course $course, Student $student)
     {
-        if (!$this->isSubscribedToCourse($course, $student)) {
+        if (! $this->isSubscribedToCourse($course, $student)) {
             $lessons = $this->lessonRepository->findAllPublishedLessonsOfCourse($course->id);
 
             foreach ($lessons as $lesson) {
@@ -136,5 +143,10 @@ class CourseService
                 ]);
             }
         }
+    }
+
+    public function searchCourses(string $query)
+    {
+        return $this->courseRepository->searchCourses($query);
     }
 }
