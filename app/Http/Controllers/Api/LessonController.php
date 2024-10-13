@@ -20,7 +20,9 @@ use Illuminate\Http\Request;
 class LessonController extends Controller
 {
     private LessonService $lessonService;
+
     private ContentBlockService $contentBlockService;
+
     private TestService $testService;
 
     public function __construct(LessonService $lessonService, ContentBlockService $contentBlockService, TestService $testService)
@@ -35,7 +37,7 @@ class LessonController extends Controller
         $contentBlock = $this->contentBlockService->createContentBlock($lesson, $request->validated());
 
         return $this->success([
-            'contentBlock' => ContentBlockResource::make($contentBlock)
+            'contentBlock' => ContentBlockResource::make($contentBlock),
         ]);
     }
 
@@ -45,8 +47,7 @@ class LessonController extends Controller
         $contentBlocks = $this->contentBlockService->findAllContentBlocksOfLesson($lesson);
         $tests = $this->testService->findAllTestsOfLesson($lesson);
 
-        if($user->isStudent())
-        {
+        if ($user->isStudent()) {
             return $this->success([
                 'lesson' => LessonResource::make($lesson),
                 'contentBlocks' => ContentBlockResource::collection($contentBlocks),
@@ -56,7 +57,7 @@ class LessonController extends Controller
         return $this->success([
             'lesson' => LessonResource::make($lesson),
             'contentBlocks' => ContentBlockResource::collection($contentBlocks),
-            'tests' => TestResource::collection($tests)
+            'tests' => TestResource::collection($tests),
         ]);
     }
 
@@ -65,7 +66,7 @@ class LessonController extends Controller
         $lesson = $this->lessonService->updateLesson($lesson, $request->validated());
 
         return $this->success([
-            'lesson' => LessonResource::make($lesson)
+            'lesson' => LessonResource::make($lesson),
         ]);
     }
 
@@ -73,7 +74,7 @@ class LessonController extends Controller
     {
         $this->lessonService->deleteLesson($lesson);
 
-        return $this->successWithoutData("Lesson deleted successfully");
+        return $this->successWithoutData('Lesson deleted successfully');
     }
 
     public function createTest(CreateTestRequest $request, Lesson $lesson)
@@ -81,7 +82,7 @@ class LessonController extends Controller
         $test = $this->testService->createTest($lesson, $request->validated());
 
         return $this->success([
-            'test' => TestResource::make($test)
+            'test' => TestResource::make($test),
         ]);
     }
 
@@ -90,7 +91,7 @@ class LessonController extends Controller
         $tests = $this->testService->findAllTestsOfLesson($lesson);
 
         return $this->success([
-            'tests' => TestWithVariantsResource::collection($tests)
+            'tests' => TestWithVariantsResource::collection($tests),
         ]);
     }
 
@@ -98,7 +99,8 @@ class LessonController extends Controller
     {
         $student = $request->user();
         $this->lessonService->finishLesson($lesson, $student);
-        return $this->successWithoutData("Lesson completed successfully");
+
+        return $this->successWithoutData('Lesson completed successfully');
     }
 
     public function setTestResult(SendTestResultRequest $request, Lesson $lesson)
@@ -106,6 +108,6 @@ class LessonController extends Controller
         $user = $request->user();
         $this->lessonService->setTestResult($lesson, $user, $request->result);
 
-        return $this->successWithoutData("Test result sent successfully");
+        return $this->successWithoutData('Test result sent successfully');
     }
 }

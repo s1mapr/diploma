@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $id
  * @property $content
  * @property $type
-*/
+ */
 class ContentBlock extends Model
 {
     use HasFactory;
@@ -19,7 +19,7 @@ class ContentBlock extends Model
     protected $fillable = [
         'content',
         'type',
-        'lesson_id'
+        'lesson_id',
     ];
 
     protected $casts = [
@@ -29,8 +29,8 @@ class ContentBlock extends Model
     protected function content(): Attribute
     {
         return Attribute::make(
-            get: fn( $value) => $this->type === ContentTypes::IMAGE ?
-                config('services.storage_base_url') . $value : $value
+            get: fn ($value) => $this->type === ContentTypes::IMAGE ?
+                config('services.storage_base_url').$value : $value
         );
     }
 }

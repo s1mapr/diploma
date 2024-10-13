@@ -2,7 +2,4 @@
 
 namespace App\DTO;
 
-class LessonDTO
-{
-
-}
+class LessonDTO {}

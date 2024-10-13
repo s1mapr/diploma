@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $teacher_id
  * @property string $content
  * @property MessageType $type
-*/
+ */
 class Message extends Model
 {
     use HasFactory;
@@ -21,10 +21,10 @@ class Message extends Model
         'student_id',
         'teacher_id',
         'content',
-        'type'
+        'type',
     ];
 
     protected $casts = [
-        'type' => MessageType::class
+        'type' => MessageType::class,
     ];
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Requests\UserAnswerRequest;
 use App\Models\Lesson;
 use App\Models\Test;
 use App\Repositories\TestRepository;
@@ -10,6 +9,7 @@ use App\Repositories\TestRepository;
 class TestService
 {
     private TestRepository $testRepository;
+
     private OpenAIService $openAIService;
 
     public function __construct(TestRepository $testRepository, OpenAIService $openAIService)
@@ -21,12 +21,14 @@ class TestService
     public function createTest(Lesson $lesson, array $data)
     {
         $data['lesson_id'] = $lesson->id;
+
         return $this->testRepository->createTest($data);
     }
 
     public function updateTest(Test $test, array $data)
     {
         $test->update($data);
+
         return $test;
     }
 
