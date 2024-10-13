@@ -137,4 +137,9 @@ class CourseService
             }
         }
     }
+
+    public function searchCourses(string $query)
+    {
+        return $this->courseRepository->searchCourses($query);
+    }
 }

@@ -34,4 +34,9 @@ class CourseRepository
     {
         return Course::where('status', CourseStatuses::ACTIVE)->where('connection_code', $connection_code)->first();
     }
+
+    public function searchCourses(string $query)
+    {
+        return Course::search($query)->get();
+    }
 }

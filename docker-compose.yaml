@@ -88,35 +88,10 @@ services:
       retries: 3
       timeout: 5s
 
-  meilisearch:
-    image: 'getmeili/meilisearch:latest'
-    ports:
-      - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
-    volumes:
-      - 'meilisearch:/data.ms'
-    environment:
-      - MEILI_MASTER_KEY=gp9yLKvVZH6yll88Gs_ld1F2DCeB05S-HC8f8tWislQ
-    networks:
-      - diploma-api
-    healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--spider", "http://localhost:7700/health" ]
-      retries: 3
-      timeout: 5s
-
-  mailpit:
-    image: 'axllent/mailpit:latest'
-    ports:
-      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
-    networks:
-      - diploma-api
-
 volumes:
   mysql:
     driver: local
   redis:
-    driver: local
-  meilisearch:
     driver: local
 
 networks:

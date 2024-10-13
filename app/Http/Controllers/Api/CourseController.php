@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddCourseByCodeRequest;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\CreateLessonRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\LessonResource;
@@ -125,6 +126,15 @@ class CourseController extends Controller
 
         return $this->success([
             'course' => CourseResource::make($course)
+        ]);
+    }
+
+    public function searchCourses(SearchRequest $request)
+    {
+        $courses = $this->courseService->searchCourses($request->search_query);
+
+        return $this->success([
+            'courses' => CourseResource::collection($courses)
         ]);
     }
 }
