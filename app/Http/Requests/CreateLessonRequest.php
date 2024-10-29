@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property $title
  * @property $estimation
  * @property $status
-*/
+ */
 class CreateLessonRequest extends FormRequest
 {
     public function rules(): array
@@ -17,7 +17,7 @@ class CreateLessonRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:100'],
             'estimation' => ['required', 'int', 'min:1'],
-            'status' => ['required', 'integer', 'in:' . implode(',', LessonStatuses::toValuesArray())],
+            'status' => ['required', 'integer', 'in:'.implode(',', LessonStatuses::toValuesArray())],
         ];
     }
 }

@@ -25,8 +25,8 @@ class UpdateCourseRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:1000'],
             'image' => ['nullable', 'image', 'max:2048', 'mimes:jpeg,png,jpg'],
             'video_url' => ['nullable', 'url', 'max:255'],
-            'status' => ['nullable', 'integer', 'in:' . implode(',', CourseStatuses::toValuesArray())],
-            'type' => ['nullable', 'integer', 'in:' . implode(',', CourseTypes::toValuesArray())],
+            'status' => ['nullable', 'integer', 'in:'.implode(',', CourseStatuses::toValuesArray())],
+            'type' => ['nullable', 'integer', 'in:'.implode(',', CourseTypes::toValuesArray())],
         ];
     }
 }

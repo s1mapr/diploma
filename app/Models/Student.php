@@ -17,10 +17,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string email
  * @property string password
  * @property string avatar_url
-*/
+ */
 class Student extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, RoleTrait;
+    use HasApiTokens, HasFactory, Notifiable, RoleTrait;
 
     protected $fillable = [
         'first_name',
@@ -40,8 +40,8 @@ class Student extends Authenticatable
     protected function avatarUrl(): Attribute
     {
         return Attribute::make(
-            get: fn(?string $value) => $value !== null ?
-                config('services.storage_base_url') . $value : null
+            get: fn (?string $value) => $value !== null ?
+                config('services.storage_base_url').$value : null
         );
     }
 

@@ -15,7 +15,7 @@ class ContentBlockFactory extends Factory
     {
         $type = $this->faker->randomElement(ContentTypes::toValuesArray());
 
-        $content = match($type) {
+        $content = match ($type) {
             ContentTypes::TEXT->value => $this->faker->text(4000),
             ContentTypes::IMAGE->value => $this->faker->imageUrl(640, 480, 'cats'),
             ContentTypes::VIDEO->value => $this->faker->url,

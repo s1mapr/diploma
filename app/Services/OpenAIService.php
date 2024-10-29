@@ -13,7 +13,7 @@ class OpenAIService
         $this->client = new Client([
             'base_uri' => 'https://api.openai.com/v1/',
             'headers' => [
-                'Authorization' => 'Bearer ' . env('CHAT_GPT_KEY'),
+                'Authorization' => 'Bearer '.env('CHAT_GPT_KEY'),
                 'Content-Type' => 'application/json',
             ],
         ]);
@@ -28,11 +28,11 @@ class OpenAIService
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => 'Ти є помічником, який пояснює, чому відповіді на тестові питання є правильними або неправильними українською мовою.'
+                        'content' => 'Ти є помічником, який пояснює, чому відповіді на тестові питання є правильними або неправильними українською мовою.',
                     ],
                     [
                         'role' => 'user',
-                        'content' => $prompt
+                        'content' => $prompt,
                     ],
                 ],
                 'max_tokens' => 150,

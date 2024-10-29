@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property string email
  * @property string password
  * @property string image
-*/
+ */
 class RegisterRequest extends FormRequest
 {
     public function authorize(): bool

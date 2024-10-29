@@ -19,6 +19,7 @@ class LessonService
     public function createLesson(Course $course, array $data)
     {
         $data['course_id'] = $course->id;
+
         return $this->lessonRepository->createLesson($data);
     }
 
@@ -30,6 +31,7 @@ class LessonService
     public function updateLesson(Lesson $lesson, array $data)
     {
         $lesson->update($data);
+
         return $lesson;
     }
 

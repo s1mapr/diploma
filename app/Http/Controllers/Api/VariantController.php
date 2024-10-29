@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateVariantRequest;
 use App\Http\Resources\VariantResource;
 use App\Models\Variant;
 use App\Services\VariantService;
-use Illuminate\Http\Request;
 
 class VariantController extends Controller
 {
@@ -21,7 +20,7 @@ class VariantController extends Controller
     public function getVariantData(Variant $variant)
     {
         return $this->success([
-            'variant' => VariantResource::make($variant)
+            'variant' => VariantResource::make($variant),
         ]);
     }
 
@@ -30,7 +29,7 @@ class VariantController extends Controller
         $variant = $this->variantService->updateVariant($variant, $request->validated());
 
         return $this->success([
-            'variant' => VariantResource::make($variant)
+            'variant' => VariantResource::make($variant),
         ]);
     }
 
@@ -38,6 +37,6 @@ class VariantController extends Controller
     {
         $this->variantService->deleteVariant($variant);
 
-        return $this->successWithoutData("Variant deleted successfully!");
+        return $this->successWithoutData('Variant deleted successfully!');
     }
 }

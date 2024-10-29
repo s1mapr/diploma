@@ -4,20 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateVariantRequest;
-use App\Http\Requests\SendTestResultRequest;
 use App\Http\Requests\UpdateTestRequest;
-use App\Http\Requests\UpdateVariantRequest;
 use App\Http\Requests\UserAnswerRequest;
 use App\Http\Resources\TestResource;
 use App\Http\Resources\VariantResource;
 use App\Models\Test;
-use App\Models\Variant;
 use App\Services\TestService;
 use App\Services\VariantService;
 
 class TestController extends Controller
 {
     private VariantService $variantService;
+
     private TestService $testService;
 
     public function __construct(VariantService $variantService, TestService $testService)
@@ -31,7 +29,7 @@ class TestController extends Controller
         $variant = $this->variantService->createVariant($test, $request->validated());
 
         return $this->success([
-            'variant' => VariantResource::make($variant)
+            'variant' => VariantResource::make($variant),
         ]);
     }
 
@@ -41,7 +39,7 @@ class TestController extends Controller
 
         return $this->success([
             'test' => TestResource::make($test),
-            'variants' => VariantResource::collection($variants)
+            'variants' => VariantResource::collection($variants),
         ]);
     }
 
@@ -50,7 +48,7 @@ class TestController extends Controller
         $test = $this->testService->updateTest($test, $request->validated());
 
         return $this->success([
-            'test' => TestResource::make($test)
+            'test' => TestResource::make($test),
         ]);
     }
 
@@ -58,7 +56,7 @@ class TestController extends Controller
     {
         $this->testService->deleteTest($test);
 
-        return $this->successWithoutData("Test deleted successfully!");
+        return $this->successWithoutData('Test deleted successfully!');
     }
 
     public function getExplanationOfTest(UserAnswerRequest $request, Test $test)

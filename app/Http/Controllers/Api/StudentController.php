@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 class StudentController extends Controller
 {
     private CourseService $courseService;
+
     private StudentService $studentService;
     private ChatService $chatService;
 
@@ -31,10 +32,10 @@ class StudentController extends Controller
         $courses = $this->courseService->getAllStudentCourses($student);
 
         return $this->success([
-            'current_page'=> $courses->currentPage(),
-            'last_page'=> $courses->lastPage(),
-            'total'=> $courses->total(),
-            'courses' => CourseResource::collection($courses)
+            'current_page' => $courses->currentPage(),
+            'last_page' => $courses->lastPage(),
+            'total' => $courses->total(),
+            'courses' => CourseResource::collection($courses),
         ]);
     }
 
@@ -44,7 +45,7 @@ class StudentController extends Controller
         $updatedStudent = $this->studentService->updateStudentData($student, $request->all());
 
         return $this->success([
-            'student' => StudentResource::make($updatedStudent)
+            'student' => StudentResource::make($updatedStudent),
         ]);
     }
 

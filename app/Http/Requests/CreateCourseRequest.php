@@ -14,7 +14,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property $video_url
  * @property $status
  * @property $type
-*/
+ */
 class CreateCourseRequest extends FormRequest
 {
     public function rules(): array
@@ -25,8 +25,8 @@ class CreateCourseRequest extends FormRequest
             'description' => ['string', 'max:1000'],
             'image' => ['image', 'max:2048', 'mimes:jpeg,png,jpg'],
             'video_url' => ['url', 'max:255'],
-            'status' => ['required', 'in:' . implode(',', CourseStatuses::toValuesArray())],
-            'type' => ['required', 'in:' . implode(',', CourseTypes::toValuesArray())],
+            'status' => ['required', 'in:'.implode(',', CourseStatuses::toValuesArray())],
+            'type' => ['required', 'in:'.implode(',', CourseTypes::toValuesArray())],
         ];
     }
 }

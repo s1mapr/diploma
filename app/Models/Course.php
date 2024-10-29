@@ -20,7 +20,7 @@ use Laravel\Scout\Searchable;
  * @property $status
  * @property $type
  * @property $connection_code
-*/
+ */
 class Course extends Model
 {
     use HasFactory, Searchable;
@@ -34,7 +34,7 @@ class Course extends Model
         'video_url',
         'status',
         'type',
-        'connection_code'
+        'connection_code',
     ];
 
     public function toSearchableArray()
@@ -51,16 +51,17 @@ class Course extends Model
 
     protected $casts = [
         'status' => CourseStatuses::class,
-        'type' => CourseTypes::class
+        'type' => CourseTypes::class,
     ];
 
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn(?string $value) => $value !== null ?
-                config('services.storage_base_url') . $value : null
+            get: fn (?string $value) => $value !== null ?
+                config('services.storage_base_url').$value : null
         );
     }
+
     public function students()
     {
         return $this->belongsToMany(Student::class)
