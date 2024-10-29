@@ -10,4 +10,11 @@ class TeacherRepository
     {
         return Teacher::where('email', $email)->first();
     }
+
+    public function updateTeacher(Teacher $teacher, array $data)
+    {
+        $teacher->update($data);
+
+        return $teacher;
+    }
 }

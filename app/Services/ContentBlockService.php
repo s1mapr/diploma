@@ -22,13 +22,20 @@ class ContentBlockService
     {
         $data['lesson_id'] = $lesson->id;
 
-        if($data['type'] == ContentTypes::IMAGE->value){
+        if ($data['type'] == ContentTypes::IMAGE->value) {
             $data['content'] = $this->s3Service->uploadFile(
                 'courses/' . $lesson->course_id . '/lessons/' . $lesson->id . '/content_blocks',
                 $data['content'],
                 uniqid('content_block_pic_', true)
             );
+        } else if ($data['type'] == ContentTypes::VIDEO->value) {
+            if (str_contains($data['content'], 'youtube.com') && !str_contains($data['content'], '/embed/')) {
+                $firstSubStr = explode("v=", $data['content'])[1];
+                $secondSubStr = explode("&", $firstSubStr)[0];
+                $data['content'] = "https://www.youtube.com/embed/" . $secondSubStr;
+            }
         }
+
         return $this->contentBlockRepository->createContentBlock($data);
     }
 
@@ -44,7 +51,7 @@ class ContentBlockService
 
     public function updateContentBlock(ContentBlock $contentBlock, array $data)
     {
-        if(isset($data['type']) && $data['type'] == ContentTypes::IMAGE->value){
+        if (isset($data['type']) && $data['type'] == ContentTypes::IMAGE->value) {
             $data['content'] = $this->s3Service->uploadFile(
                 'courses/' . $contentBlock->lesson->course_id . '/lessons/' . $contentBlock->lesson->id . '/content_blocks',
                 $data['content'],

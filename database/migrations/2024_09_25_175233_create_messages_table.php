@@ -16,8 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('teacher_id')->nullable();
             $table->string('content');
-            $table->tinyInteger('type');
+            $table->tinyInteger('content_type');
+            $table->unsignedBigInteger('chat_id');
             $table->timestamps();
+
+            $table->foreign('chat_id')->references('id')->on('chats');
         });
     }
 

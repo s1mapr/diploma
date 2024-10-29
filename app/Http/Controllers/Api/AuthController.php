@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\TeacherResource;
 use App\Services\TeacherService;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
@@ -55,7 +56,7 @@ class AuthController extends Controller
         $token = $user->createToken('default')->plainTextToken;
 
         return $this->success([
-            'user' => StudentResource::make($user),
+            'user' => TeacherResource::make($user),
             'token' => $token
         ]);
     }

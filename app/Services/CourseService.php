@@ -6,6 +6,7 @@ use App\Enums\CourseStatuses;
 use App\Models\Course;
 use App\Models\Student;
 use App\Models\Teacher;
+use App\Repositories\ChatRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\LessonRepository;
 use Illuminate\Support\Facades\DB;
@@ -19,15 +20,17 @@ class CourseService
 
     private CourseRepository $courseRepository;
     private LessonRepository $lessonRepository;
+    private ChatRepository $chatRepository;
     private S3Service $s3Service;
     private UniqueCodesService $uniqueCodesGenerationService;
 
-    public function __construct(CourseRepository $courseRepository, S3Service $s3Service, UniqueCodesService $uniqueCodesGenerationService, LessonRepository $lessonRepository)
+    public function __construct(CourseRepository $courseRepository, S3Service $s3Service, UniqueCodesService $uniqueCodesGenerationService, LessonRepository $lessonRepository, ChatRepository $chatRepository)
     {
         $this->courseRepository = $courseRepository;
         $this->s3Service = $s3Service;
         $this->uniqueCodesGenerationService = $uniqueCodesGenerationService;
         $this->lessonRepository = $lessonRepository;
+        $this->chatRepository = $chatRepository;
     }
 
     public function createCourse(Teacher $user, array $data)
@@ -39,6 +42,12 @@ class CourseService
 
             $data['connection_code'] = 'CODE';
             $course = $this->courseRepository->createCourse($data);
+
+            if (str_contains($data['video_url'], 'youtube.com') && !str_contains($data['video_url'], '/embed/')) {
+                $firstSubStr = explode("v=", $data['video_url'])[1];
+                $secondSubStr = explode("&", $firstSubStr)[0];
+                $data['video_url'] = "https://www.youtube.com/embed/" . $secondSubStr;
+            }
 
             if (isset($data['image'])) {
                 $data['image_url'] = $this->s3Service->uploadFile(
@@ -92,6 +101,8 @@ class CourseService
     public function subscribeToCourse(Course $course, Student $user)
     {
         $this->subscribeToCourseAndLessons($course, $user);
+
+        $this->createChat($course, $user);
     }
 
     public function getAllStudentCourses(Student $student)
@@ -113,6 +124,7 @@ class CourseService
         }
 
         $this->subscribeToCourseAndLessons($course, $user);
+        $this->createChat($course, $user);
 
         return $course;
     }
@@ -141,5 +153,28 @@ class CourseService
     public function searchCourses(string $query)
     {
         return $this->courseRepository->searchCourses($query);
+    }
+
+    private function createChat(Course $course, Student $student)
+    {
+
+        $searchCriteria = [
+            'teacher_id' => $course->teacher_id,
+            'student_id' => $student->id,
+        ];
+
+        $data = [
+            'teacher_id' => $course->teacher_id,
+            'student_id' => $student->id,
+            'is_started' => false,
+        ];
+
+        $chat = $this->chatRepository->getChat($searchCriteria);
+
+        if ($chat) {
+            unset($data['is_started']);
+        }
+
+        $this->chatRepository->createChat($searchCriteria, $data);
     }
 }

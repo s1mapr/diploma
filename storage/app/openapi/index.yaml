@@ -14,6 +14,8 @@ tags:
   - name: 5. Tests variants
   - name: 6. Students
   - name: 8. Content Blocks
+  - name: 9. Chats
+  - name: 10. Messages
 
 paths:
   /api/auth/student-login:
@@ -69,6 +71,9 @@ paths:
                           avatar_url:
                             type: string
                             example: "https://example.com/avatar.jpg"
+                          role:
+                            type: integer
+                            example: 1
                       token:
                         type: string
                         example: "3mPzOaKx93JXBG8hg6P8"
@@ -138,6 +143,9 @@ paths:
                           avatar_url:
                             type: string
                             example: "https://example.com/avatar.jpg"
+                          role:
+                            type: integer
+                            example: 2
                       token:
                         type: string
                         example: "3mPzOaKx93JXBG8hg6P8"
@@ -220,6 +228,9 @@ paths:
                           avatar_url:
                             type: string
                             example: "https://example.com/avatar.jpg"
+                          role:
+                            type: integer
+                            example: 1
                       token:
                         type: string
                         example: "3mPzOaKx93JXBG8hg6P8"
@@ -614,86 +625,6 @@ paths:
                     example: Connection code is invalid or course not found.
       security:
         - bearerAuth: [ ]
-  /api/courses/teacher:
-    get:
-      summary: Get All Teacher Courses
-      description: Retrieves all courses created by the authenticated teacher.
-      tags:
-        - 2. Courses
-      security:
-        - bearerAuth: [ ]
-      responses:
-        '200':
-          description: Teacher's courses retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "Request successful"
-                  data:
-                    type: object
-                    properties:
-                      current_page:
-                        type: integer
-                        example: 1
-                      last_page:
-                        type: integer
-                        example: 1
-                      total:
-                        type: integer
-                        example: 1
-                      courses:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                              example: 1
-                            teacher_id:
-                              type: integer
-                              example: 1
-                            category_id:
-                              type: integer
-                              example: 1
-                            title:
-                              type: string
-                              example: "new titleds"
-                            description:
-                              type: string
-                              example: "new description"
-                            image_url:
-                              type: string
-                              example: "https://s1ma-diploma-dev.s3.amazonaws.com/courses/1/course_pic_66e7198db6e4a8.86106661.jpg"
-                            video_url:
-                              type: string
-                              example: "https://www.youtube.com/watch?v=iXZDkqIZJpw"
-                            status:
-                              type: integer
-                              example: 2
-                            type:
-                              type: integer
-                              example: 1
-                            connection_code:
-                              type: string
-                              example: "AA318DNA"
-        '401':
-          description: Unauthorized - Teacher not authenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "error"
-                  message:
-                    type: string
-                    example: "Unauthenticated"
-
   /api/courses/{course_id}:
     get:
       summary: Get course details by ID
@@ -2079,30 +2010,114 @@ paths:
                     example: No courses found for the student.
       security:
         - bearerAuth: [ ]
-  /api/students/:
-    patch:
-      summary: Update student information
+  /api/students/chats:
+    get:
+      summary: Retrieve student chats
+      description: Fetch a list of chats for the authenticated student, including the details of the associated teacher.
+      operationId: getStudentChats
       tags:
         - 6. Students
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: The page number to fetch.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: A list of chats retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      chats:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            student_id:
+                              type: integer
+                              example: 1
+                            teacher_id:
+                              type: integer
+                              example: 1
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                first_name:
+                                  type: string
+                                  example: Maksym
+                                last_name:
+                                  type: string
+                                  example: Prokopenko
+                                email:
+                                  type: string
+                                  example: teacher@gmail.com
+                                avatar_url:
+                                  type: string
+                                  format: url
+                                  example: https://media.istockphoto.com/id/1298261537/ru/векторная/пустой-человек-профиль-глава-заполнитель.jpg
+                                role:
+                                  type: integer
+                                  example: 2
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 1
+  /api/students/update:
+    post:
+      summary: Update student data
+      description: Updates the student’s profile information, including optional fields like first name, last name, and profile image.
+      operationId: updateStudent
+      tags:
+        - 6. Students
+      security:
+        - bearerAuth: [ ]
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
                 first_name:
                   type: string
-                  example: "Aboba"
+                  description: First name of the student.
+                  maxLength: 255
                 last_name:
                   type: string
-                  example: "Prokopenko"
+                  description: Last name of the student.
+                  maxLength: 255
                 image:
                   type: string
                   format: binary
+                  description: Profile image for the student (jpeg, png, jpg formats).
+              required: [ ]
       responses:
         '200':
-          description: Successfully updated student information
+          description: Student data updated successfully.
           content:
             application/json:
               schema:
@@ -2122,18 +2137,40 @@ paths:
                             example: 1
                           first_name:
                             type: string
-                            example: "Aboba"
+                            example: Maksym
                           last_name:
                             type: string
-                            example: "Prokopenko"
+                            example: Prokopenko
                           email:
                             type: string
-                            example: "dd@gmail.com"
+                            example: dd@gmail.com
                           avatar_url:
                             type: string
-                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/users/students/1/avatar_66f3970b6391b9.27299048.jpg"
-        '400':
-          description: Invalid request data
+                            format: url
+                            example: https://s1ma-diploma-dev.s3.amazonaws.com/users/students/1/avatar_67211f3a233170.89167652.jpg
+                          role:
+                            type: integer
+                            example: 1
+  /api/teachers/chats:
+    get:
+      summary: Retrieve teacher chats
+      description: Fetch a list of chats for the authenticated teacher, including the details of the associated student.
+      operationId: getTeacherChats
+      tags:
+        - 7. Teachers
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: The page number to fetch.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: A list of chats retrieved successfully.
           content:
             application/json:
               schema:
@@ -2141,13 +2178,198 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: Error
-                  message:
-                    type: string
-                    example: "Validation failed for one or more fields."
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      chats:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            student_id:
+                              type: integer
+                              example: 1
+                            teacher_id:
+                              type: integer
+                              example: 1
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                first_name:
+                                  type: string
+                                  example: Maksym
+                                last_name:
+                                  type: string
+                                  example: Prokopenko
+                                email:
+                                  type: string
+                                  example: dd@gmail.com
+                                avatar_url:
+                                  type: string
+                                  format: url
+                                  example: https://s1ma-diploma-dev.s3.amazonaws.com/users/students/1/avatar_671fc6707c2311.00585783.jpg
+                                role:
+                                  type: integer
+                                  example: 1
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 1
+  /api/teachers/courses:
+    get:
+      summary: Retrieve courses for the authenticated teacher
+      description: Fetch a paginated list of courses created by the authenticated teacher.
+      operationId: getTeacherCourses
+      tags:
+        - 7. Teachers
       security:
         - bearerAuth: [ ]
-
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: The page number to fetch.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: A list of courses retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 20
+                      courses:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            teacher_id:
+                              type: integer
+                              example: 1
+                            category_id:
+                              type: integer
+                              example: 8
+                            title:
+                              type: string
+                              example: "Vel ipsam quidem sed est perferendis nostrum voluptas."
+                            description:
+                              type: string
+                              example: "Quo deserunt quam velit et et. Aut ullam voluptas eos tempore ut numquam."
+                            image_url:
+                              type: string
+                              format: url
+                              example: "https://s1ma-diploma-dev.s3.amazonaws.com/https://via.placeholder.com/640x480.png/001166?text=dolorem"
+                            video_url:
+                              type: string
+                              format: url
+                              example: "http://boyer.com/"
+                            status:
+                              type: integer
+                              example: 1
+                            type:
+                              type: integer
+                              example: 2
+                            connection_code:
+                              type: string
+                              example: "LgT0VN8l"
+  /api/teachers/update:
+    post:
+      summary: Update teacher's profile
+      description: Update the authenticated teacher's profile, including name and avatar image.
+      operationId: updateTeacherProfile
+      tags:
+        - 7. Teachers
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  maxLength: 255
+                  description: The teacher's first name.
+                  example: "Maks"
+                last_name:
+                  type: string
+                  maxLength: 255
+                  description: The teacher's last name.
+                  example: "Prokopenko"
+                image:
+                  type: string
+                  format: binary
+                  description: Avatar image file for the teacher. Must be JPEG, PNG, or JPG format.
+      responses:
+        '200':
+          description: Teacher profile updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      teacher:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          first_name:
+                            type: string
+                            example: "Maks"
+                          last_name:
+                            type: string
+                            example: "Prokopenko"
+                          email:
+                            type: string
+                            example: "teacher@gmail.com"
+                          avatar_url:
+                            type: string
+                            format: url
+                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/users/teachers/1/avatar_6721229f055a97.58511778.jpg"
+                          role:
+                            type: integer
+                            example: 2
   /api/content-blocks/{contentBlock}:
     get:
       tags:
@@ -2278,6 +2500,281 @@ paths:
                   message:
                     type: string
                     example: "Content block deleted successfully"
+  /api/lessons/{lesson}/content-block:
+    post:
+      tags:
+        - 8. Content Blocks
+      summary: Create a content block
+      description: |
+        This endpoint allows creating a content block associated with a specific lesson. The user must be authenticated with a valid API token.
+      operationId: createContentBlock
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: lesson
+          schema:
+            type: integer
+          required: true
+          description: The ID of the lesson to which the content block will be added.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: integer
+                  example: 2
+                content:
+                  type: string
+                  format: binary
+              required:
+                - type
+                - content
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Request successful"
+                  data:
+                    type: object
+                    properties:
+                      contentBlock:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 451
+                          content:
+                            type: string
+                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/courses/1/lessons/1/content_blocks/content_block_pic_66ea98d17644f2.42660011.png"
+                          type:
+                            type: integer
+                            example: 3
+  /api/chats/{chat_id}/message:
+    post:
+      summary: Send a message in a chat
+      description: Send a text or media message in a specified chat.
+      operationId: sendMessage
+      tags:
+        - 9. Chats
+      parameters:
+        - name: chat_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the chat where the message is being sent.
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content_type:
+                  type: integer
+                  enum: [ 1, 2 ]
+                  description: |
+                    Type of the message content.
+                    1 - Text, 2 - Media (image).
+                  example: 2
+                content:
+                  type: string
+                  description: |
+                    Message content. Should be a string if content_type is text, or a media file (JPEG, PNG, JPG) if content_type is media.
+                  oneOf:
+                    - type: string
+                      maxLength: 4000
+                    - type: string
+                      format: binary
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 17
+                          chat_id:
+                            type: integer
+                            example: 1
+                          teacher_id:
+                            type: integer
+                            nullable: true
+                            example: null
+                          student_id:
+                            type: integer
+                            example: 1
+                          content:
+                            type: string
+                            format: url
+                            example: "https://s1ma-diploma-dev.s3.amazonaws.com/chats/1/file_67211d075a7cf4.40071370.jpg"
+                          content_type:
+                            type: integer
+                            example: 2
+                          created_at:
+                            type: integer
+                            example: 1730223367
+  /api/chats/{chat_id}/messages:
+    get:
+      summary: Retrieve chat messages
+      description: Retrieve a list of messages in a specified chat with pagination.
+      operationId: getChatMessages
+      tags:
+        - 9. Chats
+      parameters:
+        - name: chat_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the chat to retrieve messages from.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: The page number for pagination.
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of messages retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  data:
+                    type: object
+                    properties:
+                      chat:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          student_id:
+                            type: integer
+                            example: 1
+                          teacher_id:
+                            type: integer
+                            example: 1
+                          user:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              first_name:
+                                type: string
+                                example: Maksym
+                              last_name:
+                                type: string
+                                example: Prokopenko
+                              email:
+                                type: string
+                                example: teacher@gmail.com
+                              avatar_url:
+                                type: string
+                                format: url
+                                example: "https://media.istockphoto.com/id/1298261537/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BF%D1%83%D1%81%D1%82%D0%BE%D0%B9-%D1%87%D0%B5%D0%BB%D0%BE%D0%B2%D0%B5%D0%BA-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8C-%D0%B3%D0%BB%D0%B0%D0%B2%D0%B0-%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA-%D0%B7%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C.jpg?s=612x612&w=0&k=20&c=2gTIDAzkqz_kKwQqpo4q4BjimC4M5w98pgISjN3prA8="
+                              role:
+                                type: integer
+                                example: 2
+                      messages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 3
+                            chat_id:
+                              type: integer
+                              example: 1
+                            teacher_id:
+                              type: integer
+                              nullable: true
+                              example: null
+                            student_id:
+                              type: integer
+                              example: 1
+                            content:
+                              type: string
+                              format: url
+                              example: "https://s1ma-diploma-dev.s3.amazonaws.com/chats/1/file_67211d075a7cf4.40071370.jpg"
+                            content_type:
+                              type: integer
+                              example: 2
+                            created_at:
+                              type: integer
+                              example: 1730137010
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 13
+  /api/messages/{message_id}:
+    delete:
+      summary: Delete a specific message
+      description: Delete a message by its ID.
+      operationId: deleteMessage
+      tags:
+        - 10. Messages
+      parameters:
+        - name: message_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the message to delete.
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Message deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Request successful
+                  message:
+                    type: string
+                    example: Message deleted successfully
 components:
   securitySchemes:
     bearerAuth:
