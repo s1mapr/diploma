@@ -5,21 +5,21 @@ namespace App\Services;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Repositories\ChatRepository;
+use App\Repositories\MessageRepository;
 
 class ChatService
 {
     private ChatRepository $chatRepository;
 
-    public function __construct(ChatRepository $chatRepository)
+    private MessageRepository $messageRepository;
+
+    private S3Service $s3Service;
+
+    public function __construct(ChatRepository $chatRepository, MessageRepository $messageRepository, S3Service $s3Service)
     {
         $this->chatRepository = $chatRepository;
-    }
-
-    public function createChat(array $data)
-    {
-        $data['is_started'] = false;
-
-        return $this->chatRepository->createChat($data);
+        $this->messageRepository = $messageRepository;
+        $this->s3Service = $s3Service;
     }
 
     public function getStudentChats(Student $student)

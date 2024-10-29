@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateStudentRequest;
+use App\Http\Resources\ChatResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\StudentResource;
+use App\Services\ChatService;
 use App\Services\CourseService;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
@@ -16,10 +18,13 @@ class StudentController extends Controller
 
     private StudentService $studentService;
 
-    public function __construct(CourseService $courseService, StudentService $studentService)
+    private ChatService $chatService;
+
+    public function __construct(CourseService $courseService, StudentService $studentService, ChatService $chatService)
     {
         $this->courseService = $courseService;
         $this->studentService = $studentService;
+        $this->chatService = $chatService;
     }
 
     public function getAllStudentCourses(Request $request)
@@ -42,6 +47,20 @@ class StudentController extends Controller
 
         return $this->success([
             'student' => StudentResource::make($updatedStudent),
+        ]);
+    }
+
+    public function getStudentChats(Request $request)
+    {
+        $student = $request->user();
+
+        $chats = $this->chatService->getStudentChats($student);
+
+        return $this->success([
+            'chats' => ChatResource::collection($chats),
+            'current_page' => $chats->currentPage(),
+            'last_page' => $chats->lastPage(),
+            'total' => $chats->total(),
         ]);
     }
 }

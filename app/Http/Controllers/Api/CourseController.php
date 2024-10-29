@@ -67,19 +67,6 @@ class CourseController extends Controller
         ]);
     }
 
-    public function getAllTeacherCourses(Request $request)
-    {
-        $user = $request->user();
-        $courses = $this->courseService->getAllTeacherCourses($user);
-
-        return $this->success([
-            'current_page' => $courses->currentPage(),
-            'last_page' => $courses->lastPage(),
-            'total' => $courses->total(),
-            'courses' => CourseResource::collection($courses),
-        ]);
-    }
-
     public function updateCourse(UpdateCourseRequest $request, Course $course)
     {
         $course = $this->courseService->updateCourse($course, $request->validated());

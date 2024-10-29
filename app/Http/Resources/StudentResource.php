@@ -19,6 +19,7 @@ class StudentResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'avatar_url' => $this->avatar_url,
+            'role' => 1,
         ];
     }
 }

@@ -4,7 +4,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContentBlockController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\LessonController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\TeacherController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\VariantController;
 use Illuminate\Http\Request;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:api_teacher,api_student');
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('/student-login', 'studentLogin');
@@ -28,7 +30,6 @@ Route::prefix('courses')->controller(CourseController::class)->group(function ()
     Route::post('/{course}/update', 'updateCourse')->middleware('auth:api_teacher');
     Route::post('/{course}/subscribe', 'subscribeToCourse')->middleware('auth:api_student');
     Route::get('/', 'getAllActiveCourses')->middleware('auth:api_student');
-    Route::get('/teacher', 'getAllTeacherCourses')->middleware('auth:api_teacher');
     Route::get('/search', 'searchCourses')->middleware('auth:api_student');
     Route::get('/{course}', 'getCourseData')->middleware('auth:api_teacher,api_student');
     Route::delete('/{course}', 'deleteCourse')->middleware('auth:api_teacher');
@@ -40,7 +41,7 @@ Route::prefix('lessons')->controller(LessonController::class)->group(function ()
     Route::post('/{lesson}/finish', 'finishLesson')->middleware('auth:api_student');
     Route::post('/{lesson}/test-result', 'setTestResult')->middleware('auth:api_student');
     Route::get('/{lesson}/tests', 'getLessonTests')->middleware('auth:api_student');
-    Route::get('/{lesson}', 'getLessonData')->middleware('auth:api_teacher');
+    Route::get('/{lesson}', 'getLessonData')->middleware('auth:api_teacher, api_student');
     Route::patch('/{lesson}', 'updateLesson')->middleware('auth:api_teacher,api_student');
     Route::delete('/{lesson}', 'deleteLesson')->middleware('auth:api_teacher');
 });
@@ -61,11 +62,27 @@ Route::prefix('variants')->controller(VariantController::class)->group(function 
 
 Route::prefix('/students')->controller(StudentController::class)->group(function () {
     Route::get('/courses', 'getAllStudentCourses')->middleware('auth:api_student');
-    Route::patch('/', 'updateStudentData')->middleware('auth:api_student');
+    Route::post('/update', 'updateStudentData')->middleware('auth:api_student');
+    Route::get('/chats', 'getStudentChats')->middleware('auth:api_student');
 });
 
 Route::prefix('/content-blocks')->controller(ContentBlockController::class)->group(function () {
     Route::get('/{contentBlock}', 'getContentBlockData')->middleware('auth:api_teacher');
     Route::patch('/{contentBlock}', 'updateContentBlock')->middleware('auth:api_teacher');
     Route::delete('/{contentBlock}', 'deleteContentBlock')->middleware('auth:api_teacher');
+});
+
+Route::prefix('/chats')->controller(ChatController::class)->group(function () {
+    Route::post('/{chat}/message', 'sendMessage')->middleware('auth:api_teacher,api_student');
+    Route::get('/{chat}/messages', 'getChatMessages')->middleware('auth:api_teacher,api_student');
+});
+
+Route::prefix('/teachers')->controller(TeacherController::class)->group(function () {
+    Route::get('/courses', 'getAllTeacherCourses')->middleware('auth:api_teacher');
+    Route::post('/update', 'updateTeacherData')->middleware('auth:api_teacher');
+    Route::get('/chats', 'getTeacherChats')->middleware('auth:api_teacher');
+});
+
+Route::prefix('/messages')->controller(MessageController::class)->group(function () {
+    Route::delete('/{message}', 'deleteMessage')->middleware('auth:api_teacher,api_student');
 });
