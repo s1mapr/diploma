@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\MessageType;
-use App\Events\MessageSent;
-use App\Models\Chat;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Repositories\ChatRepository;
@@ -13,7 +10,9 @@ use App\Repositories\MessageRepository;
 class ChatService
 {
     private ChatRepository $chatRepository;
+
     private MessageRepository $messageRepository;
+
     private S3Service $s3Service;
 
     public function __construct(ChatRepository $chatRepository, MessageRepository $messageRepository, S3Service $s3Service)

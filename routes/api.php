@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContentBlockController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\LessonController;
@@ -10,12 +11,10 @@ use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\VariantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api_teacher,api_student');
-
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('/student-login', 'studentLogin');

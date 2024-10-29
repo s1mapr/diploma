@@ -13,9 +13,10 @@ use App\Traits\HttpResponseTrait;
 
 class ChatController extends Controller
 {
-
     use HttpResponseTrait;
+
     private ChatService $chatService;
+
     private MessageService $messageService;
 
     public function __construct(ChatService $chatService, MessageService $messageService)
@@ -32,12 +33,13 @@ class ChatController extends Controller
 
         return $this->success(
             [
-                'message' => MessageResource::make($message)
+                'message' => MessageResource::make($message),
             ]
         );
     }
 
-    public function getChatMessages(Chat $chat){
+    public function getChatMessages(Chat $chat)
+    {
 
         $messages = $this->messageService->getChatMessages($chat);
 
@@ -45,9 +47,9 @@ class ChatController extends Controller
             [
                 'chat' => ChatResource::make($chat),
                 'messages' => MessageResource::collection($messages),
-                'current_page'=> $messages->currentPage(),
-                'last_page'=> $messages->lastPage(),
-                'total'=> $messages->total(),
+                'current_page' => $messages->currentPage(),
+                'last_page' => $messages->lastPage(),
+                'total' => $messages->total(),
             ]
         );
     }

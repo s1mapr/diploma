@@ -7,14 +7,15 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\TeacherResource;
-use App\Services\TeacherService;
 use App\Services\StudentService;
+use App\Services\TeacherService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     private StudentService $userService;
+
     private TeacherService $teacherService;
 
     public function __construct(StudentService $userService, TeacherService $teacherService)
@@ -27,10 +28,10 @@ class AuthController extends Controller
     {
         $user = $this->userService->getUserByEmail($request->email);
 
-        if (!$user) {
+        if (! $user) {
             return $this->error('Student not found', 401);
         }
-        if (!Hash::check($request['password'], $user->password)) {
+        if (! Hash::check($request['password'], $user->password)) {
             return $this->error('Credentials not match', 401);
         }
 
@@ -38,7 +39,7 @@ class AuthController extends Controller
 
         return $this->success([
             'user' => StudentResource::make($user),
-            'token' => $token
+            'token' => $token,
         ]);
     }
 
@@ -46,10 +47,10 @@ class AuthController extends Controller
     {
         $user = $this->teacherService->getTeacherByEmail($request->email);
 
-        if (!$user) {
+        if (! $user) {
             return $this->error('Teacher not found', 401);
         }
-        if (!Hash::check($request['password'], $user->password)) {
+        if (! Hash::check($request['password'], $user->password)) {
             return $this->error('Credentials not match', 401);
         }
 
@@ -57,7 +58,7 @@ class AuthController extends Controller
 
         return $this->success([
             'user' => TeacherResource::make($user),
-            'token' => $token
+            'token' => $token,
         ]);
     }
 
@@ -70,7 +71,7 @@ class AuthController extends Controller
 
         return $this->success([
             'user' => StudentResource::make($user),
-            'token' => $token
+            'token' => $token,
         ]);
     }
 
@@ -79,6 +80,6 @@ class AuthController extends Controller
         $user = $request->user();
         $this->userService->logout($user);
 
-        return $this->successWithoutData("Student logged out successfully");
+        return $this->successWithoutData('Student logged out successfully');
     }
 }

@@ -17,6 +17,7 @@ class StudentController extends Controller
     private CourseService $courseService;
 
     private StudentService $studentService;
+
     private ChatService $chatService;
 
     public function __construct(CourseService $courseService, StudentService $studentService, ChatService $chatService)
@@ -57,9 +58,9 @@ class StudentController extends Controller
 
         return $this->success([
             'chats' => ChatResource::collection($chats),
-            'current_page'=> $chats->currentPage(),
-            'last_page'=> $chats->lastPage(),
-            'total'=> $chats->total(),
+            'current_page' => $chats->currentPage(),
+            'last_page' => $chats->lastPage(),
+            'total' => $chats->total(),
         ]);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ContentTypes;
 use App\Enums\MessageType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $content
  * @property MessageType $content_type
  * @property \Carbon\Carbon $created_at
-*/
+ */
 class Message extends Model
 {
     use HasFactory;
@@ -26,18 +25,18 @@ class Message extends Model
         'teacher_id',
         'content',
         'content_type',
-        'chat_id'
+        'chat_id',
     ];
 
     protected $casts = [
-        'content_type' => MessageType::class
+        'content_type' => MessageType::class,
     ];
 
     protected function content(): Attribute
     {
         return Attribute::make(
-            get: fn( $value) => $this->content_type === MessageType::MEDIA ?
-                config('services.storage_base_url') . $value : $value
+            get: fn ($value) => $this->content_type === MessageType::MEDIA ?
+                config('services.storage_base_url').$value : $value
         );
     }
 }

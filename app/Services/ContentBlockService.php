@@ -29,11 +29,11 @@ class ContentBlockService
                 $data['content'],
                 uniqid('content_block_pic_', true)
             );
-        } else if ($data['type'] == ContentTypes::VIDEO->value) {
-            if (str_contains($data['content'], 'youtube.com') && !str_contains($data['content'], '/embed/')) {
-                $firstSubStr = explode("v=", $data['content'])[1];
-                $secondSubStr = explode("&", $firstSubStr)[0];
-                $data['content'] = "https://www.youtube.com/embed/" . $secondSubStr;
+        } elseif ($data['type'] == ContentTypes::VIDEO->value) {
+            if (str_contains($data['content'], 'youtube.com') && ! str_contains($data['content'], '/embed/')) {
+                $firstSubStr = explode('v=', $data['content'])[1];
+                $secondSubStr = explode('&', $firstSubStr)[0];
+                $data['content'] = 'https://www.youtube.com/embed/'.$secondSubStr;
             }
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Student;
 use App\Models\Teacher;
 use App\Repositories\TeacherRepository;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class TeacherService
 {
     private TeacherRepository $teacherRepository;
+
     private S3Service $s3Service;
 
     public function __construct(TeacherRepository $teacherRepository, S3Service $s3Service)
@@ -29,7 +29,7 @@ class TeacherService
             DB::beginTransaction();
             if (isset($data['image'])) {
                 $data['avatar_url'] = $this->s3Service->uploadFile(
-                    'users/teachers/' . $teacher->id,
+                    'users/teachers/'.$teacher->id,
                     $data['image'],
                     uniqid('avatar_', true)
                 );

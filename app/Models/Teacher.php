@@ -6,8 +6,6 @@ use App\Traits\RoleTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -17,10 +15,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property $last_name
  * @property $password
  * @property $avatar_url
-*/
+ */
 class Teacher extends Authenticatable
 {
-    use HasFactory, HasApiTokens, RoleTrait;
+    use HasApiTokens, HasFactory, RoleTrait;
 
     protected $fillable = [
         'email',
@@ -33,8 +31,8 @@ class Teacher extends Authenticatable
     protected function avatarUrl(): Attribute
     {
         return Attribute::make(
-            get: fn(?string $value) => $value !== null ?
-                config('services.storage_base_url') . $value : null
+            get: fn (?string $value) => $value !== null ?
+                config('services.storage_base_url').$value : null
         );
     }
 }

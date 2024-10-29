@@ -12,6 +12,7 @@ use App\Repositories\MessageRepository;
 class MessageService
 {
     private MessageRepository $messageRepository;
+
     private S3Service $s3Service;
 
     public function __construct(MessageRepository $messageRepository, S3Service $s3Service)
@@ -20,12 +21,13 @@ class MessageService
         $this->s3Service = $s3Service;
     }
 
-    public function sendMessage($data, Chat $chat){
+    public function sendMessage($data, Chat $chat)
+    {
         $data['chat_id'] = $chat->id;
 
-        if($data['content_type'] == MessageType::MEDIA->value){
+        if ($data['content_type'] == MessageType::MEDIA->value) {
             $data['content'] = $this->s3Service->uploadFile(
-                'chats/' . $chat->id,
+                'chats/'.$chat->id,
                 $data['content'],
                 uniqid('file_', true)
             );

@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @mixin Message
-*/
+ */
 class MessageResource extends JsonResource
 {
     public function toArray(Request $request): array

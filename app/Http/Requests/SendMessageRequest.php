@@ -14,8 +14,8 @@ class SendMessageRequest extends FormRequest
         ];
 
         if ($this->input('content_type') == MessageType::TEXT->value) {
-            $rules['content'] = ['required', 'string' ,'max:4000'];
-        } else if ($this->input('content_type') == MessageType::MEDIA->value) {
+            $rules['content'] = ['required', 'string', 'max:4000'];
+        } elseif ($this->input('content_type') == MessageType::MEDIA->value) {
             $rules['content'] = ['required', 'file', 'max:2048'];
         }
 

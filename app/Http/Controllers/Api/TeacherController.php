@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateStudentRequest;
 use App\Http\Requests\UpdateTeacherRequest;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\CourseResource;
-use App\Http\Resources\StudentResource;
 use App\Http\Resources\TeacherResource;
 use App\Services\ChatService;
 use App\Services\CourseService;
@@ -17,7 +15,9 @@ use Illuminate\Http\Request;
 class TeacherController extends Controller
 {
     private ChatService $chatService;
+
     private CourseService $courseService;
+
     private TeacherService $teacherService;
 
     public function __construct(ChatService $chatService, CourseService $courseService, TeacherService $teacherService)
@@ -35,9 +35,9 @@ class TeacherController extends Controller
 
         return $this->success([
             'chats' => ChatResource::collection($chats),
-            'current_page'=> $chats->currentPage(),
-            'last_page'=> $chats->lastPage(),
-            'total'=> $chats->total(),
+            'current_page' => $chats->currentPage(),
+            'last_page' => $chats->lastPage(),
+            'total' => $chats->total(),
         ]);
     }
 
@@ -47,10 +47,10 @@ class TeacherController extends Controller
         $courses = $this->courseService->getAllTeacherCourses($user);
 
         return $this->success([
-            'current_page'=> $courses->currentPage(),
-            'last_page'=> $courses->lastPage(),
-            'total'=> $courses->total(),
-            'courses' => CourseResource::collection($courses)
+            'current_page' => $courses->currentPage(),
+            'last_page' => $courses->lastPage(),
+            'total' => $courses->total(),
+            'courses' => CourseResource::collection($courses),
         ]);
     }
 
@@ -60,7 +60,7 @@ class TeacherController extends Controller
         $updatedStudent = $this->teacherService->updateTeacherData($teacher, $request->all());
 
         return $this->success([
-            'teacher' => TeacherResource::make($updatedStudent)
+            'teacher' => TeacherResource::make($updatedStudent),
         ]);
     }
 }
