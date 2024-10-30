@@ -41,7 +41,7 @@ Route::prefix('lessons')->controller(LessonController::class)->group(function ()
     Route::post('/{lesson}/finish', 'finishLesson')->middleware('auth:api_student');
     Route::post('/{lesson}/test-result', 'setTestResult')->middleware('auth:api_student');
     Route::get('/{lesson}/tests', 'getLessonTests')->middleware('auth:api_student');
-    Route::get('/{lesson}', 'getLessonData')->middleware('auth:api_teacher, api_student');
+    Route::get('/{lesson}', 'getLessonData')->middleware('auth:api_teacher,api_student');
     Route::patch('/{lesson}', 'updateLesson')->middleware('auth:api_teacher,api_student');
     Route::delete('/{lesson}', 'deleteLesson')->middleware('auth:api_teacher');
 });
